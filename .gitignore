@@ -1,0 +1,60 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+.env*.local
+
+# build output
+dist/
+build/
+
+# typescript
+*.tsbuildinfo
+
+# debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# keys & certificates
+*.pem
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Expo
+.expo/
+web-build/
+expo-env.d.ts
+
+# React Native generated
+apps/mobile/ios/
+apps/mobile/android/
+*.orig.*
+.kotlin/
+.metro-health-check*
+
+# Prisma
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
+
+# Docker
+docker-compose.override.yml
+
+# test coverage
+coverage/
+
+# Redis
+dump.rdb

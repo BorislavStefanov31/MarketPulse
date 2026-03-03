@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String?
+  role          Role           @default(USER)
+  currency      String         @default("USD")
+  locale        String         @default("en")
+  theme         String         @default("system")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
+  alerts        Alert[]
+  auditLogs     AuditLog[]
+  watchlists    Watchlist[]
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid())
+  token      String    @unique
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  isRevoked  Boolean   @default(false)
+  deviceId   String?
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+}
+
+model Alert {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  targetPrice Float
+  isTriggered Boolean   @default(false)
+  isActive    Boolean   @default(true)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+}
+
+model Asset {
+  id           String           @id @default(uuid())
+  symbol       String           @unique
+  name         String
+  type         AssetType
+  image        String?
+  currentPrice Float?
+  marketCap    Float?
+  volume24h    Float?
+  change24h    Float?
+  rank         Int?
+  sector       String?
+  exchange     String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  snapshots    AssetSnapshot[]
+  alerts       Alert[]
+  aiReports    AIReport[]
+  watchlists   WatchlistAsset[]
+
+  @@index([type])
+  @@index([symbol])
+}
+
+model Watchlist {
+  id        String           @id @default(uuid())
+  name      String
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assets    WatchlistAsset[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model WatchlistAsset {
+  id          String    @id @default(uuid())
+  watchlistId String
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  userId      String
+  sortOrder   Int       @default(0)
+  addedAt     DateTime  @default(now())
+
+  @@unique([watchlistId, assetId])
+  @@index([userId, assetId])
+}
+
+model AssetSnapshot {
+  id        String   @id @default(uuid())
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  price     Float
+  marketCap Float?
+  volume    Float?
+  change24h Float?
+  timestamp DateTime @default(now())
+
+  @@index([assetId, timestamp(sort: Desc)])
+}
+
+model AIReport {
+  id        String   @id @default(uuid())
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  summary   String
+  content   String
+  sentiment String?
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([assetId, isPinned])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String?
+  entityId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AssetType {
+  CRYPTO
+  STOCK
+}
