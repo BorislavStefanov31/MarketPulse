@@ -52,6 +52,7 @@ model Alert {
 model Asset {
   id           String           @id @default(uuid())
   symbol       String           @unique
+  coingeckoId  String?          @unique
   name         String
   type         AssetType
   image        String?

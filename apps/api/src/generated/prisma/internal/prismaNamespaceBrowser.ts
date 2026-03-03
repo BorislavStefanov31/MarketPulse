@@ -125,6 +125,7 @@ export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof Al
 export const AssetScalarFieldEnum = {
   id: 'id',
   symbol: 'symbol',
+  coingeckoId: 'coingeckoId',
   name: 'name',
   type: 'type',
   image: 'image',

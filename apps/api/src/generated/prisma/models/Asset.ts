@@ -45,6 +45,7 @@ export type AssetSumAggregateOutputType = {
 export type AssetMinAggregateOutputType = {
   id: string | null
   symbol: string | null
+  coingeckoId: string | null
   name: string | null
   type: $Enums.AssetType | null
   image: string | null
@@ -62,6 +63,7 @@ export type AssetMinAggregateOutputType = {
 export type AssetMaxAggregateOutputType = {
   id: string | null
   symbol: string | null
+  coingeckoId: string | null
   name: string | null
   type: $Enums.AssetType | null
   image: string | null
@@ -79,6 +81,7 @@ export type AssetMaxAggregateOutputType = {
 export type AssetCountAggregateOutputType = {
   id: number
   symbol: number
+  coingeckoId: number
   name: number
   type: number
   image: number
@@ -114,6 +117,7 @@ export type AssetSumAggregateInputType = {
 export type AssetMinAggregateInputType = {
   id?: true
   symbol?: true
+  coingeckoId?: true
   name?: true
   type?: true
   image?: true
@@ -131,6 +135,7 @@ export type AssetMinAggregateInputType = {
 export type AssetMaxAggregateInputType = {
   id?: true
   symbol?: true
+  coingeckoId?: true
   name?: true
   type?: true
   image?: true
@@ -148,6 +153,7 @@ export type AssetMaxAggregateInputType = {
 export type AssetCountAggregateInputType = {
   id?: true
   symbol?: true
+  coingeckoId?: true
   name?: true
   type?: true
   image?: true
@@ -252,6 +258,7 @@ export type AssetGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type AssetGroupByOutputType = {
   id: string
   symbol: string
+  coingeckoId: string | null
   name: string
   type: $Enums.AssetType
   image: string | null
@@ -292,6 +299,7 @@ export type AssetWhereInput = {
   NOT?: Prisma.AssetWhereInput | Prisma.AssetWhereInput[]
   id?: Prisma.StringFilter<"Asset"> | string
   symbol?: Prisma.StringFilter<"Asset"> | string
+  coingeckoId?: Prisma.StringNullableFilter<"Asset"> | string | null
   name?: Prisma.StringFilter<"Asset"> | string
   type?: Prisma.EnumAssetTypeFilter<"Asset"> | $Enums.AssetType
   image?: Prisma.StringNullableFilter<"Asset"> | string | null
@@ -313,6 +321,7 @@ export type AssetWhereInput = {
 export type AssetOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
+  coingeckoId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -334,6 +343,7 @@ export type AssetOrderByWithRelationInput = {
 export type AssetWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   symbol?: string
+  coingeckoId?: string
   AND?: Prisma.AssetWhereInput | Prisma.AssetWhereInput[]
   OR?: Prisma.AssetWhereInput[]
   NOT?: Prisma.AssetWhereInput | Prisma.AssetWhereInput[]
@@ -353,11 +363,12 @@ export type AssetWhereUniqueInput = Prisma.AtLeast<{
   alerts?: Prisma.AlertListRelationFilter
   aiReports?: Prisma.AIReportListRelationFilter
   watchlists?: Prisma.WatchlistAssetListRelationFilter
-}, "id" | "symbol">
+}, "id" | "symbol" | "coingeckoId">
 
 export type AssetOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
+  coingeckoId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -383,6 +394,7 @@ export type AssetScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AssetScalarWhereWithAggregatesInput | Prisma.AssetScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Asset"> | string
   symbol?: Prisma.StringWithAggregatesFilter<"Asset"> | string
+  coingeckoId?: Prisma.StringNullableWithAggregatesFilter<"Asset"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Asset"> | string
   type?: Prisma.EnumAssetTypeWithAggregatesFilter<"Asset"> | $Enums.AssetType
   image?: Prisma.StringNullableWithAggregatesFilter<"Asset"> | string | null
@@ -400,6 +412,7 @@ export type AssetScalarWhereWithAggregatesInput = {
 export type AssetCreateInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -421,6 +434,7 @@ export type AssetCreateInput = {
 export type AssetUncheckedCreateInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -442,6 +456,7 @@ export type AssetUncheckedCreateInput = {
 export type AssetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -463,6 +478,7 @@ export type AssetUpdateInput = {
 export type AssetUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -484,6 +500,7 @@ export type AssetUncheckedUpdateInput = {
 export type AssetCreateManyInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -501,6 +518,7 @@ export type AssetCreateManyInput = {
 export type AssetUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -518,6 +536,7 @@ export type AssetUpdateManyMutationInput = {
 export type AssetUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -540,6 +559,7 @@ export type AssetScalarRelationFilter = {
 export type AssetCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
+  coingeckoId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   image?: Prisma.SortOrder
@@ -565,6 +585,7 @@ export type AssetAvgOrderByAggregateInput = {
 export type AssetMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
+  coingeckoId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   image?: Prisma.SortOrder
@@ -582,6 +603,7 @@ export type AssetMaxOrderByAggregateInput = {
 export type AssetMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   symbol?: Prisma.SortOrder
+  coingeckoId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   image?: Prisma.SortOrder
@@ -683,6 +705,7 @@ export type AssetUpdateOneRequiredWithoutAiReportsNestedInput = {
 export type AssetCreateWithoutAlertsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -703,6 +726,7 @@ export type AssetCreateWithoutAlertsInput = {
 export type AssetUncheckedCreateWithoutAlertsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -739,6 +763,7 @@ export type AssetUpdateToOneWithWhereWithoutAlertsInput = {
 export type AssetUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -759,6 +784,7 @@ export type AssetUpdateWithoutAlertsInput = {
 export type AssetUncheckedUpdateWithoutAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -779,6 +805,7 @@ export type AssetUncheckedUpdateWithoutAlertsInput = {
 export type AssetCreateWithoutWatchlistsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -799,6 +826,7 @@ export type AssetCreateWithoutWatchlistsInput = {
 export type AssetUncheckedCreateWithoutWatchlistsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -835,6 +863,7 @@ export type AssetUpdateToOneWithWhereWithoutWatchlistsInput = {
 export type AssetUpdateWithoutWatchlistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -855,6 +884,7 @@ export type AssetUpdateWithoutWatchlistsInput = {
 export type AssetUncheckedUpdateWithoutWatchlistsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -875,6 +905,7 @@ export type AssetUncheckedUpdateWithoutWatchlistsInput = {
 export type AssetCreateWithoutSnapshotsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -895,6 +926,7 @@ export type AssetCreateWithoutSnapshotsInput = {
 export type AssetUncheckedCreateWithoutSnapshotsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -931,6 +963,7 @@ export type AssetUpdateToOneWithWhereWithoutSnapshotsInput = {
 export type AssetUpdateWithoutSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -951,6 +984,7 @@ export type AssetUpdateWithoutSnapshotsInput = {
 export type AssetUncheckedUpdateWithoutSnapshotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -971,6 +1005,7 @@ export type AssetUncheckedUpdateWithoutSnapshotsInput = {
 export type AssetCreateWithoutAiReportsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -991,6 +1026,7 @@ export type AssetCreateWithoutAiReportsInput = {
 export type AssetUncheckedCreateWithoutAiReportsInput = {
   id?: string
   symbol: string
+  coingeckoId?: string | null
   name: string
   type: $Enums.AssetType
   image?: string | null
@@ -1027,6 +1063,7 @@ export type AssetUpdateToOneWithWhereWithoutAiReportsInput = {
 export type AssetUpdateWithoutAiReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1047,6 +1084,7 @@ export type AssetUpdateWithoutAiReportsInput = {
 export type AssetUncheckedUpdateWithoutAiReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   symbol?: Prisma.StringFieldUpdateOperationsInput | string
+  coingeckoId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumAssetTypeFieldUpdateOperationsInput | $Enums.AssetType
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1125,6 +1163,7 @@ export type AssetCountOutputTypeCountWatchlistsArgs<ExtArgs extends runtime.Type
 export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   symbol?: boolean
+  coingeckoId?: boolean
   name?: boolean
   type?: boolean
   image?: boolean
@@ -1147,6 +1186,7 @@ export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type AssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   symbol?: boolean
+  coingeckoId?: boolean
   name?: boolean
   type?: boolean
   image?: boolean
@@ -1164,6 +1204,7 @@ export type AssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type AssetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   symbol?: boolean
+  coingeckoId?: boolean
   name?: boolean
   type?: boolean
   image?: boolean
@@ -1181,6 +1222,7 @@ export type AssetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type AssetSelectScalar = {
   id?: boolean
   symbol?: boolean
+  coingeckoId?: boolean
   name?: boolean
   type?: boolean
   image?: boolean
@@ -1195,7 +1237,7 @@ export type AssetSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "symbol" | "name" | "type" | "image" | "currentPrice" | "marketCap" | "volume24h" | "change24h" | "rank" | "sector" | "exchange" | "createdAt" | "updatedAt", ExtArgs["result"]["asset"]>
+export type AssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "symbol" | "coingeckoId" | "name" | "type" | "image" | "currentPrice" | "marketCap" | "volume24h" | "change24h" | "rank" | "sector" | "exchange" | "createdAt" | "updatedAt", ExtArgs["result"]["asset"]>
 export type AssetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   snapshots?: boolean | Prisma.Asset$snapshotsArgs<ExtArgs>
   alerts?: boolean | Prisma.Asset$alertsArgs<ExtArgs>
@@ -1217,6 +1259,7 @@ export type $AssetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     symbol: string
+    coingeckoId: string | null
     name: string
     type: $Enums.AssetType
     image: string | null
@@ -1658,6 +1701,7 @@ export interface Prisma__AssetClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface AssetFieldRefs {
   readonly id: Prisma.FieldRef<"Asset", 'String'>
   readonly symbol: Prisma.FieldRef<"Asset", 'String'>
+  readonly coingeckoId: Prisma.FieldRef<"Asset", 'String'>
   readonly name: Prisma.FieldRef<"Asset", 'String'>
   readonly type: Prisma.FieldRef<"Asset", 'AssetType'>
   readonly image: Prisma.FieldRef<"Asset", 'String'>

@@ -9,8 +9,21 @@ const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 router.use(authenticate);
 
-router.post("/report/:assetId", async (req, res) => {
+router.get("/report/:assetId/latest", async (req, res) => {
   const assetId = req.params.assetId as string;
+
+  const startOfDay = new Date();
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
+  const existing = await prisma.aIReport.findFirst({
+    where: { assetId, createdAt: { gte: startOfDay } },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (existing) {
+    res.json(existing);
+    return;
+  }
 
   const asset = await prisma.asset.findUnique({ where: { id: assetId } });
   if (!asset) {
@@ -41,36 +54,16 @@ Be specific with data and sources. Write in a professional but accessible tone.`
   if (lower.includes("bullish")) sentiment = "bullish";
   else if (lower.includes("bearish")) sentiment = "bearish";
 
-
   const sentences = content.split(/(?<=[.!?])\s+/);
   const summary = sentences.slice(0, 3).join(" ");
 
   const report = await prisma.aIReport.create({
-    data: {
-      assetId,
-      summary,
-      content,
-      sentiment,
-    },
+    data: { assetId, summary, content, sentiment },
   });
 
   await prisma.auditLog.create({
     data: { userId: req.userId, action: "AI_REPORT_GENERATED", entity: "AIReport", entityId: report.id },
   });
-
-  res.status(201).json(report);
-});
-
-router.get("/report/:assetId/latest", async (req, res) => {
-  const report = await prisma.aIReport.findFirst({
-    where: { assetId: req.params.assetId as string },
-    orderBy: { createdAt: "desc" },
-  });
-
-  if (!report) {
-    res.status(404).json({ error: "No report found" });
-    return;
-  }
 
   res.json(report);
 });

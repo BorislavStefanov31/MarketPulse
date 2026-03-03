@@ -15,6 +15,19 @@ router.get("/", async (req, res) => {
     orderBy: { createdAt: "desc" },
   });
 
+  for (const alert of alerts) {
+    if (alert.isActive && !alert.isTriggered && alert.asset.currentPrice) {
+      if (alert.asset.currentPrice >= alert.targetPrice) {
+        await prisma.alert.update({
+          where: { id: alert.id },
+          data: { isTriggered: true, triggeredAt: new Date() },
+        });
+        alert.isTriggered = true;
+        alert.triggeredAt = new Date();
+      }
+    }
+  }
+
   res.json(alerts);
 });
 
