@@ -1,12 +1,14 @@
 {
-  "name": "api",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
+    "dev:worker": "tsx watch src/worker.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "start:worker": "node dist/worker.js",
     "test": "vitest run && vitest run --config vitest.integration.config.ts",
     "test:unit": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.ts",
