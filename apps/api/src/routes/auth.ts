@@ -6,7 +6,9 @@ import { prisma } from "../prisma.js";
 import { env } from "../config.js";
 import { validate } from "../middlewares/validate.js";
 import { authenticate } from "../middlewares/auth.js";
-import { signupSchema, loginSchema, refreshSchema } from "../schemas/auth.js";
+import { randomBytes } from "node:crypto";
+import { signupSchema, loginSchema, refreshSchema, forgotPasswordSchema, resetPasswordSchema } from "../schemas/auth.js";
+import { sendPasswordResetEmail } from "../services/email.js";
 
 const router = Router();
 
@@ -145,6 +147,72 @@ router.post("/refresh", validate(refreshSchema), async (req, res) => {
     });
 
     res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+});
+
+router.post("/forgot-password", validate(forgotPasswordSchema), async (req, res) => {
+    const { email } = req.body;
+
+    // Always return success to prevent email enumeration
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+        res.json({ message: "If that email exists, a reset link has been sent" });
+        return;
+    }
+
+    // Invalidate any existing reset tokens for this user
+    await prisma.passwordReset.updateMany({
+        where: { userId: user.id, usedAt: null },
+        data: { usedAt: new Date() },
+    });
+
+    const token = randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await prisma.passwordReset.create({
+        data: { userId: user.id, token, expiresAt },
+    });
+
+    await sendPasswordResetEmail(email, token);
+
+    await prisma.auditLog.create({
+        data: { userId: user.id, action: "PASSWORD_RESET_REQUESTED", entity: "User", entityId: user.id },
+    });
+
+    res.json({ message: "If that email exists, a reset link has been sent" });
+});
+
+router.post("/reset-password", validate(resetPasswordSchema), async (req, res) => {
+    const { token, password } = req.body;
+
+    const resetRecord = await prisma.passwordReset.findUnique({ where: { token } });
+
+    if (!resetRecord || resetRecord.usedAt || resetRecord.expiresAt < new Date()) {
+        res.status(400).json({ error: "Invalid or expired reset token" });
+        return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await prisma.$transaction([
+        prisma.user.update({
+            where: { id: resetRecord.userId },
+            data: { password: hashedPassword },
+        }),
+        prisma.passwordReset.update({
+            where: { id: resetRecord.id },
+            data: { usedAt: new Date() },
+        }),
+        // Revoke all refresh tokens on password change
+        prisma.refreshToken.deleteMany({
+            where: { userId: resetRecord.userId },
+        }),
+    ]);
+
+    await prisma.auditLog.create({
+        data: { userId: resetRecord.userId, action: "PASSWORD_RESET_COMPLETED", entity: "User", entityId: resetRecord.userId },
+    });
+
+    res.json({ message: "Password has been reset" });
 });
 
 router.post("/logout", authenticate, async (req, res) => {

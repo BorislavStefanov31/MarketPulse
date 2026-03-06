@@ -1,27 +1,32 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
+import { validateUUID } from "../middlewares/validateUUID.js";
 import { cache } from "../services/cache.js";
 
 const router = Router();
 
 router.use(authenticate);
 
-router.get("/top100", async (req, res) => {
-  const limit = Math.min(Number(req.query.limit) || 20, 100);
-  const cursor = req.query.cursor as string | undefined;
-  const sort = (req.query.sort as string) || "rank";
-  const order = (req.query.order as string) || "asc";
-  const type = req.query.type as string | undefined;
-  const sector = req.query.sector as string | undefined;
-  const exchange = req.query.exchange as string | undefined;
+const ALLOWED_SORTS = ["rank", "marketCap", "volume24h", "change24h", "currentPrice"] as const;
+const ALLOWED_TYPES = ["CRYPTO", "STOCK", "ETF", "COMMODITY"] as const;
 
-  const allowedSorts = ["rank", "marketCap", "volume24h", "change24h", "currentPrice"];
-  const sortField = allowedSorts.includes(sort) ? sort : "rank";
+router.get("/top100", async (req, res) => {
+  const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
+  const cursor = typeof req.query.cursor === "string" ? req.query.cursor : undefined;
+  const sort = String(req.query.sort || "rank");
+  const order = String(req.query.order || "asc");
+  const type = typeof req.query.type === "string" ? req.query.type : undefined;
+
+  const sortField = ALLOWED_SORTS.includes(sort as typeof ALLOWED_SORTS[number]) ? sort : "rank";
   const sortOrder = order === "desc" ? "desc" : "asc";
+  if (type && !ALLOWED_TYPES.includes(type as typeof ALLOWED_TYPES[number])) {
+    res.status(400).json({ error: "Invalid type filter" });
+    return;
+  }
 
   // Cache key based on query params
-  const queryKey = `${limit}:${cursor || ""}:${sortField}:${sortOrder}:${type || ""}:${sector || ""}:${exchange || ""}`;
+  const queryKey = `${limit}:${cursor || ""}:${sortField}:${sortOrder}:${type || ""}`;
   const cacheKey = cache.keys.top100(queryKey);
 
   const cached = await cache.get(cacheKey);
@@ -32,8 +37,6 @@ router.get("/top100", async (req, res) => {
 
   const where: Record<string, unknown> = {};
   if (type) where.type = type;
-  if (sector) where.sector = sector;
-  if (exchange) where.exchange = exchange;
 
   const assets = await prisma.asset.findMany({
     where,
@@ -57,7 +60,7 @@ router.get("/top100", async (req, res) => {
   res.json(result);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", validateUUID("id"), async (req, res) => {
   const id = req.params.id as string;
   const cacheKey = cache.keys.asset(id);
 
@@ -79,7 +82,7 @@ router.get("/:id", async (req, res) => {
   res.json(asset);
 });
 
-router.get("/:id/history", async (req, res) => {
+router.get("/:id/history", validateUUID("id"), async (req, res) => {
   const days = Math.min(Number(req.query.days) || 7, 365);
   const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 

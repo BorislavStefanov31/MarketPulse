@@ -2,6 +2,7 @@ import { Router } from "express";
 import OpenAI from "openai";
 import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
+import { validateUUID } from "../middlewares/validateUUID.js";
 import { env } from "../config.js";
 import { cache } from "../services/cache.js";
 import { extractSentiment, extractSummary } from "../services/aiHelpers.js";
@@ -11,7 +12,7 @@ const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
 router.use(authenticate);
 
-router.get("/report/:assetId/latest", async (req, res) => {
+router.get("/report/:assetId/latest", validateUUID("assetId"), async (req, res) => {
   const assetId = req.params.assetId as string;
 
   // Check cache first
@@ -78,7 +79,7 @@ Be specific with data and sources. Write in a professional but accessible tone.`
   res.json(report);
 });
 
-router.get("/report/:assetId/history", async (req, res) => {
+router.get("/report/:assetId/history", validateUUID("assetId"), async (req, res) => {
   const reports = await prisma.aIReport.findMany({
     where: { assetId: req.params.assetId as string },
     orderBy: { createdAt: "desc" },

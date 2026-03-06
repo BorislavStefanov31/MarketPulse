@@ -15,5 +15,7 @@ const envSchema = z.object({
   JWT_ACCESS_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   OPENAI_API_KEY: z.string(),
+  RESEND_API_KEY: z.string().default(""),
+  RESEND_FROM_EMAIL: z.string().default("noreply@marketpulse.app"),
 });
 export const env = envSchema.parse(process.env);

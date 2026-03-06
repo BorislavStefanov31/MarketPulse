@@ -21,7 +21,7 @@ describe("Auth API", () => {
     it("creates a new user and returns tokens", async () => {
       const res = await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "test@test.com", password: "password123", name: "Test" });
+        .send({ email: "test@test.com", password: "Password123", name: "Test" });
 
       expect(res.status).toBe(201);
       expect(res.body.accessToken).toBeDefined();
@@ -34,11 +34,11 @@ describe("Auth API", () => {
     it("returns 409 for duplicate email", async () => {
       await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "dupe@test.com", password: "password123", name: "First" });
+        .send({ email: "dupe@test.com", password: "Password123", name: "First" });
 
       const res = await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "dupe@test.com", password: "password123", name: "Second" });
+        .send({ email: "dupe@test.com", password: "Password123", name: "Second" });
 
       expect(res.status).toBe(409);
       expect(res.body.error).toBe("Email already in use");
@@ -57,13 +57,13 @@ describe("Auth API", () => {
     beforeEach(async () => {
       await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "login@test.com", password: "password123", name: "Login" });
+        .send({ email: "login@test.com", password: "Password123", name: "Login" });
     });
 
     it("returns tokens for valid credentials", async () => {
       const res = await request(app)
         .post("/api/v1/auth/login")
-        .send({ email: "login@test.com", password: "password123" });
+        .send({ email: "login@test.com", password: "Password123" });
 
       expect(res.status).toBe(200);
       expect(res.body.accessToken).toBeDefined();
@@ -81,7 +81,7 @@ describe("Auth API", () => {
     it("returns 401 for non-existent user", async () => {
       const res = await request(app)
         .post("/api/v1/auth/login")
-        .send({ email: "nobody@test.com", password: "password123" });
+        .send({ email: "nobody@test.com", password: "Password123" });
 
       expect(res.status).toBe(401);
     });
@@ -91,7 +91,7 @@ describe("Auth API", () => {
     it("rotates tokens", async () => {
       const signup = await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "refresh@test.com", password: "password123", name: "Refresh" });
+        .send({ email: "refresh@test.com", password: "Password123", name: "Refresh" });
 
       const res = await request(app)
         .post("/api/v1/auth/refresh")
@@ -106,7 +106,7 @@ describe("Auth API", () => {
     it("invalidates old refresh token after use", async () => {
       const signup = await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "refresh2@test.com", password: "password123", name: "Refresh2" });
+        .send({ email: "refresh2@test.com", password: "Password123", name: "Refresh2" });
 
       await request(app)
         .post("/api/v1/auth/refresh")
@@ -125,7 +125,7 @@ describe("Auth API", () => {
     it("logs out successfully", async () => {
       const signup = await request(app)
         .post("/api/v1/auth/signup")
-        .send({ email: "logout@test.com", password: "password123", name: "Logout" });
+        .send({ email: "logout@test.com", password: "Password123", name: "Logout" });
 
       const res = await request(app)
         .post("/api/v1/auth/logout")

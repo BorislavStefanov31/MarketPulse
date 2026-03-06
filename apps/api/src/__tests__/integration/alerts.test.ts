@@ -14,7 +14,7 @@ describe("Alerts API", () => {
 
     const signup = await request(app)
       .post("/api/v1/auth/signup")
-      .send({ email: "alerts@test.com", password: "password123", name: "Alerts" });
+      .send({ email: "alerts@test.com", password: "Password123", name: "Alerts" });
 
     accessToken = signup.body.accessToken;
     userId = signup.body.user.id;

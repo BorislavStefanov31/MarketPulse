@@ -9,7 +9,7 @@ let accessToken: string;
 async function createUserAndLogin() {
   const res = await request(app)
     .post("/api/v1/auth/signup")
-    .send({ email: "assets@test.com", password: "password123", name: "Assets" });
+    .send({ email: "assets@test.com", password: "Password123", name: "Assets" });
   return res.body.accessToken;
 }
 

@@ -2,7 +2,8 @@ import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
-import { createAlertSchema } from "../schemas/alerts.js";
+import { validateUUID } from "../middlewares/validateUUID.js";
+import { createAlertSchema, updateAlertSchema } from "../schemas/alerts.js";
 import { cache } from "../services/cache.js";
 import { shouldTriggerAlert } from "../services/alertHelpers.js";
 
@@ -85,7 +86,7 @@ router.post("/", validate(createAlertSchema), async (req, res) => {
   res.status(201).json(alert);
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", validateUUID("id"), validate(updateAlertSchema), async (req, res) => {
   const alert = await prisma.alert.findUnique({
     where: { id: req.params.id as string },
   });
@@ -97,7 +98,7 @@ router.patch("/:id", async (req, res) => {
 
   const updated = await prisma.alert.update({
     where: { id: req.params.id as string },
-    data: { isActive: !alert.isActive },
+    data: { isActive: req.body.isActive },
     include: { asset: true },
   });
 
@@ -106,7 +107,7 @@ router.patch("/:id", async (req, res) => {
   res.json(updated);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", validateUUID("id"), async (req, res) => {
   const alert = await prisma.alert.findUnique({
     where: { id: req.params.id as string },
   });

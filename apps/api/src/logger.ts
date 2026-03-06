@@ -5,6 +5,16 @@ import { randomUUID } from "node:crypto";
 
 export const logger = pino({
   level: env.NODE_ENV === "production" ? "info" : "debug",
+  redact: {
+    paths: [
+      "req.headers.authorization",
+      "req.body.password",
+      "req.body.refreshToken",
+      "res.body.accessToken",
+      "res.body.refreshToken",
+    ],
+    censor: "[REDACTED]",
+  },
   ...(env.NODE_ENV === "development" && {
     transport: { target: "pino-pretty" },
   }),

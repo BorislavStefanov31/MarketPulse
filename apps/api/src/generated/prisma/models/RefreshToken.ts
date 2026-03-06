@@ -429,10 +429,6 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type RefreshTokenCreateWithoutUserInput = {
   id?: string
   token: string

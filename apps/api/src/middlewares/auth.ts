@@ -13,7 +13,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     const token = authorization.split(" ")[1];
 
     try {
-        const payload = jwt.verify(token, env.JWT_ACCESS_SECRET) as { userId: string; role: string };
+        const payload = jwt.verify(token, env.JWT_ACCESS_SECRET, { algorithms: ["HS256"] }) as { userId: string; role: string };
         req.userId = payload.userId;
         req.userRole = payload.role;
         next();

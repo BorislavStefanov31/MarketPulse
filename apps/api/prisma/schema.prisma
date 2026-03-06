@@ -22,6 +22,17 @@ model User {
   alerts        Alert[]
   auditLogs     AuditLog[]
   watchlists    Watchlist[]
+  passwordResets PasswordReset[]
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
 }
 
 model RefreshToken {
