@@ -6,15 +6,16 @@ import watchlistsRoutes from "./watchlists.js";
 import alertsRoutes from "./alerts.js";
 import aiRoutes from "./ai.js";
 import auditLogRoutes from "./auditLog.js";
+import { authLimiter, aiLimiter } from "../middlewares/rateLimiter.js";
 
 const router = Router();
 
-router.use("/auth", authRoutes);
+router.use("/auth", authLimiter, authRoutes);
 router.use("/users", usersRoutes);
 router.use("/assets", assetsRoutes);
 router.use("/watchlists", watchlistsRoutes);
 router.use("/alerts", alertsRoutes);
-router.use("/ai", aiRoutes);
+router.use("/ai", aiLimiter, aiRoutes);
 router.use("/audit-log", auditLogRoutes);
 
 export default router;

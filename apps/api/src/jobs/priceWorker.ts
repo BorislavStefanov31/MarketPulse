@@ -2,6 +2,7 @@ import { Worker } from "bullmq";
 import { prisma } from "../prisma.js";
 import { env } from "../config.js";
 import { coingeckoProvider } from "../services/marketProvider.js";
+import { cache } from "../services/cache.js";
 
 const worker = new Worker(
   "price-fetch",
@@ -45,6 +46,9 @@ const worker = new Worker(
         },
       });
     }
+
+    await cache.invalidatePattern("cache:top100:*");
+    await cache.invalidatePattern("cache:asset:*");
 
     console.log(`[PriceWorker] Updated ${coins.length} assets`);
   },

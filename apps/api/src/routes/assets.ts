@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
+import { cache } from "../services/cache.js";
 
 const router = Router();
 
@@ -18,6 +19,16 @@ router.get("/top100", async (req, res) => {
   const allowedSorts = ["rank", "marketCap", "volume24h", "change24h", "currentPrice"];
   const sortField = allowedSorts.includes(sort) ? sort : "rank";
   const sortOrder = order === "desc" ? "desc" : "asc";
+
+  // Cache key based on query params
+  const queryKey = `${limit}:${cursor || ""}:${sortField}:${sortOrder}:${type || ""}:${sector || ""}:${exchange || ""}`;
+  const cacheKey = cache.keys.top100(queryKey);
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    res.json(cached);
+    return;
+  }
 
   const where: Record<string, unknown> = {};
   if (type) where.type = type;
@@ -39,22 +50,31 @@ router.get("/top100", async (req, res) => {
 
   const nextCursor = hasNext ? assets[assets.length - 1].id : null;
 
-  res.json({
-    data: assets,
-    nextCursor,
-    hasNext,
-  });
+  const result = { data: assets, nextCursor, hasNext };
+
+  await cache.set(cacheKey, result, cache.TTL.TOP100);
+
+  res.json(result);
 });
 
 router.get("/:id", async (req, res) => {
-  const asset = await prisma.asset.findUnique({
-    where: { id: req.params.id as string },
-  });
+  const id = req.params.id as string;
+  const cacheKey = cache.keys.asset(id);
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    res.json(cached);
+    return;
+  }
+
+  const asset = await prisma.asset.findUnique({ where: { id } });
 
   if (!asset) {
     res.status(404).json({ error: "Asset not found" });
     return;
   }
+
+  await cache.set(cacheKey, asset, cache.TTL.ASSET_DETAIL);
 
   res.json(asset);
 });

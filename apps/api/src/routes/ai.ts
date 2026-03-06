@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
 import { env } from "../config.js";
+import { cache } from "../services/cache.js";
 
 const router = Router();
 const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
@@ -12,6 +13,15 @@ router.use(authenticate);
 router.get("/report/:assetId/latest", async (req, res) => {
   const assetId = req.params.assetId as string;
 
+  // Check cache first
+  const cacheKey = cache.keys.aiReport(assetId);
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    res.json(cached);
+    return;
+  }
+
+  // Check DB for today's report
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
 
@@ -21,10 +31,12 @@ router.get("/report/:assetId/latest", async (req, res) => {
   });
 
   if (existing) {
+    await cache.set(cacheKey, existing);
     res.json(existing);
     return;
   }
 
+  // No report for today — generate one
   const asset = await prisma.asset.findUnique({ where: { id: assetId } });
   if (!asset) {
     res.status(404).json({ error: "Asset not found" });
@@ -60,6 +72,9 @@ Be specific with data and sources. Write in a professional but accessible tone.`
   const report = await prisma.aIReport.create({
     data: { assetId, summary, content, sentiment },
   });
+
+  // Cache the new report (no TTL — stays until next report is generated)
+  await cache.set(cacheKey, report);
 
   await prisma.auditLog.create({
     data: { userId: req.userId, action: "AI_REPORT_GENERATED", entity: "AIReport", entityId: report.id },

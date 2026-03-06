@@ -3,32 +3,54 @@ import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
 import { createAlertSchema } from "../schemas/alerts.js";
+import { cache } from "../services/cache.js";
 
 const router = Router();
 
 router.use(authenticate);
 
 router.get("/", async (req, res) => {
+  const cacheKey = cache.keys.alerts(req.userId!);
+
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    res.json(cached);
+    return;
+  }
+
   const alerts = await prisma.alert.findMany({
     where: { userId: req.userId },
     include: { asset: true },
     orderBy: { createdAt: "desc" },
   });
 
+  await cache.set(cacheKey, alerts);
+  res.json(alerts);
+});
+
+router.get("/triggered", async (req, res) => {
+  const alerts = await prisma.alert.findMany({
+    where: { userId: req.userId, isActive: true, isTriggered: false },
+    include: { asset: true },
+  });
+
+  const newlyTriggered = [];
+
   for (const alert of alerts) {
-    if (alert.isActive && !alert.isTriggered && alert.asset.currentPrice) {
-      if (alert.asset.currentPrice >= alert.targetPrice) {
-        await prisma.alert.update({
-          where: { id: alert.id },
-          data: { isTriggered: true, triggeredAt: new Date() },
-        });
-        alert.isTriggered = true;
-        alert.triggeredAt = new Date();
-      }
+    if (alert.asset.currentPrice && alert.asset.currentPrice >= alert.targetPrice) {
+      await prisma.alert.update({
+        where: { id: alert.id },
+        data: { isTriggered: true, triggeredAt: new Date() },
+      });
+      newlyTriggered.push({ ...alert, isTriggered: true, triggeredAt: new Date() });
     }
   }
 
-  res.json(alerts);
+  if (newlyTriggered.length > 0) {
+    await cache.invalidate(cache.keys.alerts(req.userId!));
+  }
+
+  res.json(newlyTriggered);
 });
 
 router.post("/", validate(createAlertSchema), async (req, res) => {
@@ -57,6 +79,8 @@ router.post("/", validate(createAlertSchema), async (req, res) => {
     },
   });
 
+  await cache.invalidate(cache.keys.alerts(req.userId!));
+
   res.status(201).json(alert);
 });
 
@@ -76,6 +100,8 @@ router.patch("/:id", async (req, res) => {
     include: { asset: true },
   });
 
+  await cache.invalidate(cache.keys.alerts(req.userId!));
+
   res.json(updated);
 });
 
@@ -94,6 +120,8 @@ router.delete("/:id", async (req, res) => {
   await prisma.auditLog.create({
     data: { userId: req.userId, action: "ALERT_DELETED", entity: "Alert", entityId: req.params.id as string },
   });
+
+  await cache.invalidate(cache.keys.alerts(req.userId!));
 
   res.json({ message: "Alert deleted" });
 });
