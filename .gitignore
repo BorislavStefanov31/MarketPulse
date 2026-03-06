@@ -47,8 +47,9 @@ apps/mobile/android/
 .metro-health-check*
 
 # Prisma
-apps/api/prisma/*.db
-apps/api/prisma/*.db-journal
+apps/backend/prisma/*.db
+apps/backend/prisma/*.db-journal
+.env.test
 
 # Docker
 docker-compose.override.yml
