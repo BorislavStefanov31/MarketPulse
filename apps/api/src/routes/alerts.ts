@@ -4,6 +4,7 @@ import { authenticate } from "../middlewares/auth.js";
 import { validate } from "../middlewares/validate.js";
 import { createAlertSchema } from "../schemas/alerts.js";
 import { cache } from "../services/cache.js";
+import { shouldTriggerAlert } from "../services/alertHelpers.js";
 
 const router = Router();
 
@@ -37,7 +38,7 @@ router.get("/triggered", async (req, res) => {
   const newlyTriggered = [];
 
   for (const alert of alerts) {
-    if (alert.asset.currentPrice && alert.asset.currentPrice >= alert.targetPrice) {
+    if (shouldTriggerAlert({ isActive: alert.isActive, isTriggered: alert.isTriggered, targetPrice: alert.targetPrice, currentPrice: alert.asset.currentPrice })) {
       await prisma.alert.update({
         where: { id: alert.id },
         data: { isTriggered: true, triggeredAt: new Date() },

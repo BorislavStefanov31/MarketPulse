@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
 import { z } from "zod";
+import { existsSync } from "node:fs";
+import path from "node:path";
 
-dotenv.config();
+// Load .env.test if it exists (created by testcontainers), otherwise load .env
+const envTestPath = path.resolve(import.meta.dirname, "../.env.test");
+dotenv.config({ path: existsSync(envTestPath) ? envTestPath : undefined });
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(3000),

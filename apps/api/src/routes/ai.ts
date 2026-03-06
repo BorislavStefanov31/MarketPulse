@@ -4,6 +4,7 @@ import { prisma } from "../prisma.js";
 import { authenticate } from "../middlewares/auth.js";
 import { env } from "../config.js";
 import { cache } from "../services/cache.js";
+import { extractSentiment, extractSummary } from "../services/aiHelpers.js";
 
 const router = Router();
 const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
@@ -60,14 +61,8 @@ Be specific with data and sources. Write in a professional but accessible tone.`
   });
 
   const content = response.output_text;
-
-  let sentiment = "neutral";
-  const lower = content.toLowerCase();
-  if (lower.includes("bullish")) sentiment = "bullish";
-  else if (lower.includes("bearish")) sentiment = "bearish";
-
-  const sentences = content.split(/(?<=[.!?])\s+/);
-  const summary = sentences.slice(0, 3).join(" ");
+  const sentiment = extractSentiment(content);
+  const summary = extractSummary(content);
 
   const report = await prisma.aIReport.create({
     data: { assetId, summary, content, sentiment },

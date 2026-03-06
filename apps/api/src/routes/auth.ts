@@ -1,6 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { randomUUID } from "node:crypto";
 import { prisma } from "../prisma.js";
 import { env } from "../config.js";
 import { validate } from "../middlewares/validate.js";
@@ -30,7 +31,7 @@ router.post("/signup", validate(signupSchema), async (req, res) => {
         { expiresIn: "15m" }
     );
     const refreshToken = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, jti: randomUUID() },
         env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" }
     );
@@ -75,7 +76,7 @@ router.post("/login", validate(loginSchema), async (req, res) => {
         { expiresIn: "15m" }
     );
     const refreshToken = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, jti: randomUUID() },
         env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" }
     );
@@ -130,7 +131,7 @@ router.post("/refresh", validate(refreshSchema), async (req, res) => {
         { expiresIn: "15m" }
     );
     const newRefreshToken = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, jti: randomUUID() },
         env.JWT_REFRESH_SECRET,
         { expiresIn: "7d" }
     );
