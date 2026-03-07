@@ -2,31 +2,36 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import * as SecureStore from "expo-secure-store";
 import { setOnSessionExpired } from "../api/client";
 import * as authService from "../services/auth";
-
-type User = {
-  id: string;
-  email: string;
-  displayName: string;
-};
+import { getMe, type UserProfile } from "../services/users";
 
 type AuthState = {
-  user: User | null;
+  user: UserProfile | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const clearSession = useCallback(() => {
     setUser(null);
     authService.clearTokens();
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const profile = await getMe();
+      setUser(profile);
+    } catch {
+      // ignore — user stays as-is
+    }
   }, []);
 
   // Check for existing token on app start
@@ -35,10 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const token = await SecureStore.getItemAsync("accessToken");
         if (token) {
-          // Token exists — try to fetch user profile to validate it
-          const client = (await import("../api/client")).default;
-          const { data } = await client.get<User>("/users/me");
-          setUser(data);
+          const profile = await getMe();
+          setUser(profile);
         }
       } catch {
         await authService.clearTokens();
@@ -55,15 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const data = await authService.login(email, password);
-    setUser(data.user);
-  }, []);
+    setUser(data.user as unknown as UserProfile);
+    // Fetch full profile (includes locale, theme)
+    refreshUser();
+  }, [refreshUser]);
 
   const signup = useCallback(
     async (email: string, password: string, displayName: string) => {
       const data = await authService.signup(email, password, displayName);
-      setUser(data.user);
+      setUser(data.user as unknown as UserProfile);
+      refreshUser();
     },
-    []
+    [refreshUser]
   );
 
   const logout = useCallback(async () => {
@@ -80,6 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         signup,
         logout,
+        refreshUser,
       }}
     >
       {children}
