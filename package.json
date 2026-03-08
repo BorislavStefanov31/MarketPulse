@@ -1,0 +1,11 @@
+{
+  "name": "marketpulse",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix apps/backend && npm install --prefix apps/mobile",
+    "dev:backend": "docker compose up",
+    "dev:mobile": "npm start --prefix apps/mobile",
+    "dev": "npm run dev:backend & npm run dev:mobile"
+  }
+}
