@@ -32,7 +32,6 @@ export default function ForgotPasswordScreen({ navigation }: Props) {
       await forgotPassword(email.trim().toLowerCase());
       setSent(true);
     } catch {
-      // Don't reveal if email exists or not — always show success
       setSent(true);
     } finally {
       setLoading(false);

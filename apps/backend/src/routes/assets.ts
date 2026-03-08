@@ -25,7 +25,6 @@ router.get("/top100", async (req, res) => {
     return;
   }
 
-  // Cache key based on query params
   const queryKey = `${limit}:${cursor || ""}:${sortField}:${sortOrder}:${type || ""}`;
   const cacheKey = cache.keys.top100(queryKey);
 

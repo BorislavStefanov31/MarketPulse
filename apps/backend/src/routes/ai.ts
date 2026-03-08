@@ -15,7 +15,6 @@ router.use(authenticate);
 router.get("/report/:assetId/latest", validateUUID("assetId"), async (req, res) => {
   const assetId = req.params.assetId as string;
 
-  // Check cache first
   const cacheKey = cache.keys.aiReport(assetId);
   const cached = await cache.get(cacheKey);
   if (cached) {
@@ -23,7 +22,6 @@ router.get("/report/:assetId/latest", validateUUID("assetId"), async (req, res) 
     return;
   }
 
-  // Check DB for today's report
   const startOfDay = new Date();
   startOfDay.setUTCHours(0, 0, 0, 0);
 
@@ -38,7 +36,6 @@ router.get("/report/:assetId/latest", validateUUID("assetId"), async (req, res) 
     return;
   }
 
-  // No report for today — generate one
   const asset = await prisma.asset.findUnique({ where: { id: assetId } });
   if (!asset) {
     res.status(404).json({ error: "Asset not found" });
@@ -69,7 +66,6 @@ Be specific with data and sources. Write in a professional but accessible tone.`
     data: { assetId, summary, content, sentiment },
   });
 
-  // Cache the new report (no TTL — stays until next report is generated)
   await cache.set(cacheKey, report);
 
   await prisma.auditLog.create({

@@ -17,7 +17,6 @@ import type { MainStackParamList } from "../../navigation/MainStack";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLocale } from "../../contexts/LocaleContext";
 
-
 const SORT_FIELDS: { labelKey: string; field: SortField }[] = [
   { labelKey: "rank", field: "rank" },
   { labelKey: "price", field: "currentPrice" },
@@ -97,7 +96,6 @@ export default function HomeScreen() {
 
   const assets = data?.pages.flatMap((p) => p.data) ?? [];
 
-  // Refetch when tab gains focus (skip initial mount)
   const firstFocus = useRef(true);
   useFocusEffect(
     useCallback(() => {
@@ -109,7 +107,6 @@ export default function HomeScreen() {
     }, [refetch]),
   );
 
-  // Separate state for pull-to-refresh so background refetch doesn't show spinner
   const [manualRefresh, setManualRefresh] = useState(false);
   const handleRefresh = useCallback(async () => {
     setManualRefresh(true);

@@ -13,7 +13,6 @@ export default function RootNavigator() {
   const { applyFromServer: applyLocale } = useLocale();
   const appliedRef = useRef(false);
 
-  // Apply server preferences once after login
   useEffect(() => {
     if (user && !appliedRef.current) {
       appliedRef.current = true;

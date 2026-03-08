@@ -12,12 +12,10 @@ const io = new Server(server, {
   cors: { origin: "*" },
 });
 
-// Redis adapter so events published from the worker reach connected clients
 const pubClient = new Redis(env.REDIS_URL);
 const subClient = pubClient.duplicate();
 io.adapter(createAdapter(pubClient, subClient));
 
-// JWT auth middleware
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token as string | undefined;
   if (!token) return next(new Error("No token"));
@@ -34,7 +32,6 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  // Join a personal room so we can target per-user events (e.g. alerts)
   const userId = socket.data.userId as string;
   socket.join(`user:${userId}`);
   console.log(`[Socket] ${userId} connected (${socket.id})`);

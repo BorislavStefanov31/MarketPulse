@@ -1,14 +1,12 @@
 import { redis } from "../redis.js";
 
-// Default TTLs in seconds
 const TTL = {
-  TOP100: 60,       // 60 seconds
-  ASSET_DETAIL: 60, // 60 seconds
-  AI_REPORT: 0,     // no TTL — invalidated manually when new report arrives
-  ALERTS: 0,        // no TTL — invalidated on any alert change
+  TOP100: 60,
+  ASSET_DETAIL: 60,
+  AI_REPORT: 0,
+  ALERTS: 0,
 };
 
-// Keys
 const keys = {
   top100: (query: string) => `cache:top100:${query}`,
   asset: (id: string) => `cache:asset:${id}`,
@@ -16,7 +14,6 @@ const keys = {
   alerts: (userId: string) => `cache:alerts:${userId}`,
 };
 
-// Generic get/set
 async function get<T>(key: string): Promise<T | null> {
   const data = await redis.get(key);
   if (!data) return null;

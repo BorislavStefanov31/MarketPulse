@@ -3,7 +3,6 @@ import { z } from "zod";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-// Load .env.test if it exists (created by testcontainers), otherwise load root .env
 const envTestPath = path.resolve(import.meta.dirname, "../.env.test");
 const rootEnvPath = path.resolve(import.meta.dirname, "../../../.env");
 dotenv.config({ path: existsSync(envTestPath) ? envTestPath : rootEnvPath });

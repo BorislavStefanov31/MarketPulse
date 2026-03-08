@@ -51,7 +51,6 @@ const worker = new Worker(
     await cache.invalidatePattern("cache:top100:*");
     await cache.invalidatePattern("cache:asset:*");
 
-    // Emit real-time price update via Socket.IO (through Redis)
     emitter.emit("prices:update", { timestamp: Date.now() });
 
     console.log(`[PriceWorker] Updated ${coins.length} assets`);

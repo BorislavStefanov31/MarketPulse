@@ -204,7 +204,6 @@ const options: swaggerJsdoc.Options = {
       { name: "Audit Log", description: "Admin audit log (admin only)" },
     ],
     paths: {
-      // ── Auth ──────────────────────────────────────────
       "/auth/signup": {
         post: {
           tags: ["Auth"],
@@ -356,7 +355,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── Users ──────────────────────────────────────────
       "/users/me": {
         get: {
           tags: ["Users"],
@@ -394,7 +392,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── Assets ──────────────────────────────────────────
       "/assets/top100": {
         get: {
           tags: ["Assets"],
@@ -444,7 +441,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── Watchlists ──────────────────────────────────────────
       "/watchlists": {
         get: {
           tags: ["Watchlists"],
@@ -561,7 +557,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── Alerts ──────────────────────────────────────────
       "/alerts": {
         get: {
           tags: ["Alerts"],
@@ -650,7 +645,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── AI ──────────────────────────────────────────
       "/ai/report/{assetId}/latest": {
         get: {
           tags: ["AI"],
@@ -681,7 +675,6 @@ const options: swaggerJsdoc.Options = {
         },
       },
 
-      // ── Audit Log ──────────────────────────────────────────
       "/audit-log": {
         get: {
           tags: ["Audit Log"],
@@ -699,7 +692,7 @@ const options: swaggerJsdoc.Options = {
       },
     },
   },
-  apis: [], // All paths defined inline above
+  apis: [],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

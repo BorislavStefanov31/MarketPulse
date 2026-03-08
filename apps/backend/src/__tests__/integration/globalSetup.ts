@@ -7,7 +7,6 @@ import path from "node:path";
 const ENV_FILE = path.resolve(import.meta.dirname, "../../../.env.test");
 
 export default async function setup() {
-  // Start containers in parallel
   const [pg, rd] = await Promise.all([
     new PostgreSqlContainer("postgres:16")
       .withDatabase("marketpulse_test")
@@ -20,7 +19,6 @@ export default async function setup() {
   const databaseUrl = pg.getConnectionUri();
   const redisUrl = rd.getConnectionUrl();
 
-  // Write .env.test so test workers pick up the container URLs
   writeFileSync(
     ENV_FILE,
     [
@@ -33,7 +31,6 @@ export default async function setup() {
     ].join("\n")
   );
 
-  // Run prisma migrations against the test database
   const schemaPath = path.resolve(import.meta.dirname, "../../../prisma/schema.prisma");
   execSync(`npx prisma migrate deploy --schema=${schemaPath}`, {
     env: { ...process.env, DATABASE_URL: databaseUrl },
@@ -44,7 +41,6 @@ export default async function setup() {
   console.log(`  Postgres: ${databaseUrl}`);
   console.log(`  Redis: ${redisUrl}\n`);
 
-  // Return teardown function — stops containers and cleans up .env.test
   return async () => {
     try { unlinkSync(ENV_FILE); } catch {}
     await Promise.all([pg.stop(), rd.stop()]);

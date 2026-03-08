@@ -30,11 +30,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const profile = await getMe();
       setUser(profile);
     } catch {
-      // ignore — user stays as-is
     }
   }, []);
 
-  // Check for existing token on app start
   useEffect(() => {
     (async () => {
       try {
@@ -51,7 +49,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
-  // Wire up session expired callback
   useEffect(() => {
     setOnSessionExpired(clearSession);
   }, [clearSession]);
@@ -59,7 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const data = await authService.login(email, password);
     setUser(data.user as unknown as UserProfile);
-    // Fetch full profile (includes locale, theme)
     refreshUser();
   }, [refreshUser]);
 

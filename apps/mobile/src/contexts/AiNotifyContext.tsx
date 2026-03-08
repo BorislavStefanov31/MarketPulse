@@ -44,7 +44,6 @@ export function AiNotifyProvider({ children }: { children: React.ReactNode }) {
     [pending],
   );
 
-  // Subscribe to query cache changes to detect when AI reports land
   useEffect(() => {
     if (pending.length === 0) return;
 

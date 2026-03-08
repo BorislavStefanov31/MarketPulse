@@ -92,7 +92,6 @@ describe("Alerts API", () => {
 
   describe("GET /api/v1/alerts/triggered", () => {
     it("triggers alert when price meets target", async () => {
-      // Create alert with target below current price (95000)
       await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
@@ -108,7 +107,6 @@ describe("Alerts API", () => {
     });
 
     it("returns empty when no alerts are triggered", async () => {
-      // Create alert with target above current price
       await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)

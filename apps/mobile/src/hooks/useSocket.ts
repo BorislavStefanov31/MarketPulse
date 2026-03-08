@@ -16,7 +16,6 @@ export function useSocket() {
   const { t } = useLocale();
   const socketRef = useRef<Socket | null>(null);
 
-  // Keep latest refs to avoid stale closures
   const showToastRef = useRef(showToast);
   showToastRef.current = showToast;
   const tRef = useRef(t);
@@ -37,13 +36,11 @@ export function useSocket() {
       });
 
       socket.on("prices:update", async () => {
-        // Invalidate all asset-related queries so screens refetch fresh data
         queryClient.invalidateQueries({ queryKey: ["assets"] });
         queryClient.invalidateQueries({ queryKey: ["asset"] });
         queryClient.invalidateQueries({ queryKey: ["assetHistory"] });
         queryClient.invalidateQueries({ queryKey: ["watchlists"] });
 
-        // Check if any alerts were triggered by the new prices
         try {
           const triggered = await getTriggeredAlerts();
           if (triggered.length > 0) {
@@ -61,7 +58,6 @@ export function useSocket() {
             }
           }
         } catch {
-          // silently ignore alert check errors
         }
       });
 

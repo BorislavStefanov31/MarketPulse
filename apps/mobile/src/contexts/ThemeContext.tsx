@@ -57,14 +57,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Called by user action — saves locally + syncs to backend
   const setMode = useCallback((newMode: ThemeMode) => {
     setModeState(newMode);
     AsyncStorage.setItem(STORAGE_KEY, newMode);
     updateMe({ theme: newMode }).catch(() => {});
   }, []);
 
-  // Called after login to apply server preference without re-saving to backend
   const applyFromServer = useCallback((theme: string) => {
     if (isValidTheme(theme)) {
       setModeState(theme);

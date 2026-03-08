@@ -112,7 +112,6 @@ describe("Auth API", () => {
         .post("/api/v1/auth/refresh")
         .send({ refreshToken: signup.body.refreshToken });
 
-      // Try to use the old token again
       const res = await request(app)
         .post("/api/v1/auth/refresh")
         .send({ refreshToken: signup.body.refreshToken });

@@ -7,18 +7,15 @@ import { setupSwagger } from "./swagger.js";
 
 const app = express();
 
-// Middleware
 app.use(helmet());
 app.use(express.json());
 app.use(httpLogger);
 app.use(globalLimiter);
 
-// Health check
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", uptime: process.uptime() });
 });
 
-// Metrics
 app.get("/metrics", (_req, res) => {
   const mem = process.memoryUsage();
   res.json({
@@ -33,14 +30,11 @@ app.get("/metrics", (_req, res) => {
   });
 });
 
-// API routes
 import routes from "./routes/index.js";
 app.use("/api/v1", routes);
 
-// Swagger docs (after routes, before error handler — needs CSP disabled)
 setupSwagger(app);
 
-// Centralized error handler (must be last)
 app.use(errorHandler);
 
 export default app;

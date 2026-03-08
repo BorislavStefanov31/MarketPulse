@@ -5,7 +5,7 @@ import { getTriggeredAlerts } from "../services/alerts";
 import { useToast } from "../components/Toast";
 import { useLocale } from "../contexts/LocaleContext";
 
-const POLL_INTERVAL = 1 * 60 * 1000; // 1 minute
+const POLL_INTERVAL = 1 * 60 * 1000;
 
 export function useAlertPoller() {
   const { showToast } = useToast();
@@ -13,7 +13,6 @@ export function useAlertPoller() {
   const queryClient = useQueryClient();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Keep latest refs so the interval callback always uses current values
   const showToastRef = useRef(showToast);
   showToastRef.current = showToast;
   const tRef = useRef(t);
@@ -37,18 +36,14 @@ export function useAlertPoller() {
         }
       }
     } catch {
-      // silently ignore polling errors
     }
   }, [queryClient]);
 
   useEffect(() => {
-    // Check immediately on mount
     checkAlerts();
 
-    // Poll every 5 minutes
     intervalRef.current = setInterval(checkAlerts, POLL_INTERVAL);
 
-    // Pause when app goes to background, resume when foreground
     const subscription = AppState.addEventListener("change", (state) => {
       if (state === "active") {
         checkAlerts();

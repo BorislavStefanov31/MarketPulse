@@ -412,7 +412,6 @@ const styles = StyleSheet.create({
   chevron: { fontSize: 11 },
   assetsList: { borderTopWidth: StyleSheet.hairlineWidth },
 
-  // Swipeable row
   swipeContainer: {
     overflow: "hidden",
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -436,7 +435,6 @@ const styles = StyleSheet.create({
   },
   swipeDeleteText: { color: "#fff", fontSize: 22, fontWeight: "500", marginTop: -1 },
   assetRowAnimated: {
-    // sits on top of swipeAction
   },
   assetRow: {
     flexDirection: "row",
@@ -458,12 +456,10 @@ const styles = StyleSheet.create({
   changeText: { fontSize: 12, marginTop: 2, fontWeight: "600" },
   emptyText: { textAlign: "center", padding: 24, fontSize: 14 },
 
-  // Empty state
   emptyState: { alignItems: "center", marginTop: 80, paddingHorizontal: 32 },
   emptyIcon: { fontSize: 48, marginBottom: 12 },
   noWatchlists: { textAlign: "center", fontSize: 15, lineHeight: 22 },
 
-  // FAB
   fab: {
     position: "absolute",
     right: 20,
@@ -486,7 +482,6 @@ const styles = StyleSheet.create({
   },
   fabText: { color: "#fff", fontSize: 30, fontWeight: "300", marginTop: -1 },
 
-  // Modal
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",

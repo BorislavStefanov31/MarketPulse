@@ -7,29 +7,24 @@ export type Locale = "en" | "bg";
 
 const STRINGS: Record<Locale, Record<string, string>> = {
   en: {
-    // Tabs
     dashboard: "Dashboard",
     watchlists: "Watchlists",
     alerts: "Alerts",
     settings: "Settings",
     logout: "Log Out",
-    // Common
     error: "Error",
     somethingWentWrong: "Oops! Something went wrong.",
-    // Settings
     theme: "Theme",
     currency: "Currency",
     language: "Language",
     light: "Light",
     dark: "Dark",
     system: "System",
-    // Home
     rank: "Rank",
     price: "Price",
     change24h: "24h %",
     volume: "Volume",
     noAssetsFound: "No assets found",
-    // Asset detail
     assetNotFound: "Asset not found",
     chartAndStats: "Chart & Stats",
     aiReport: "AI Report",
@@ -39,7 +34,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     type: "Type",
     noPriceHistory: "No price history yet",
     noAiReport: "No AI report available. One will be generated shortly.",
-    // Watchlists
     newWatchlist: "New Watchlist",
     watchlistName: "Watchlist name",
     create: "Create",
@@ -52,7 +46,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     emptyWatchlist: "No assets in this watchlist yet",
     noWatchlists: "No watchlists yet. Tap + to create one.",
     addToWatchlist: "Add to Watchlist",
-    // Alerts
     newAlert: "New Alert",
     priceAbove: "Price Reached",
     priceBelow: "Price Dropped",
@@ -78,29 +71,24 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     generatingReport: "Generating...",
   },
   bg: {
-    // Табове
     dashboard: "Табло",
     watchlists: "Списъци",
     alerts: "Аларми",
     settings: "Настройки",
     logout: "Изход",
-    // Общи
     error: "Грешка",
     somethingWentWrong: "Упс! Нещо се обърка.",
-    // Настройки
     theme: "Тема",
     currency: "Валута",
     language: "Език",
     light: "Светла",
     dark: "Тъмна",
     system: "Системна",
-    // Начален екран
     rank: "Ранг",
     price: "Цена",
     change24h: "24ч %",
     volume: "Обем",
     noAssetsFound: "Няма намерени активи",
-    // Детайли за актив
     assetNotFound: "Активът не е намерен",
     chartAndStats: "Графика и статистика",
     aiReport: "AI Доклад",
@@ -110,7 +98,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     type: "Тип",
     noPriceHistory: "Няма история на цените",
     noAiReport: "Няма наличен AI доклад. Ще бъде генериран скоро.",
-    // Списъци
     newWatchlist: "Нов списък",
     watchlistName: "Име на списъка",
     create: "Създай",
@@ -123,7 +110,6 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     emptyWatchlist: "Все още няма активи в този списък",
     noWatchlists: "Все още нямате списъци. Натиснете + за да създадете.",
     addToWatchlist: "Добави към списък",
-    // Аларми
     newAlert: "Нова аларма",
     priceAbove: "Цената достигна",
     priceBelow: "Цената падна",
@@ -181,14 +167,12 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Called by user action — saves locally + syncs to backend
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l);
     AsyncStorage.setItem(STORAGE_KEY, l);
     updateMe({ locale: l }).catch(() => {});
   }, []);
 
-  // Called after login to apply server preference without re-saving to backend
   const applyFromServer = useCallback((l: string) => {
     if (isValidLocale(l)) {
       setLocaleState(l);

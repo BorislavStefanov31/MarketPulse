@@ -1,8 +1,7 @@
-// Interface — описва какво трябва да върне всеки provider
 export interface MarketAsset {
-  id: string;         // provider-specific ID (e.g. "bitcoin")
-  symbol: string;     // e.g. "BTC"
-  name: string;       // e.g. "Bitcoin"
+  id: string;
+  symbol: string;
+  name: string;
   image: string;
   currentPrice: number;
   marketCap: number;
@@ -15,7 +14,6 @@ export interface MarketProvider {
   fetchTopAssets(limit: number): Promise<MarketAsset[]>;
 }
 
-// CoinGecko implementation
 const COINGECKO_URL = "https://api.coingecko.com/api/v3";
 
 export const coingeckoProvider: MarketProvider = {

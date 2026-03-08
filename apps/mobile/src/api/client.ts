@@ -13,7 +13,6 @@ export function setOnSessionExpired(cb: () => void) {
   onSessionExpired = cb;
 }
 
-// Attach access token to every request
 client.interceptors.request.use(async (config) => {
   const token = await SecureStore.getItemAsync("accessToken");
   if (token) {
@@ -22,7 +21,6 @@ client.interceptors.request.use(async (config) => {
   return config;
 });
 
-// On 401, try to refresh and retry once
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;

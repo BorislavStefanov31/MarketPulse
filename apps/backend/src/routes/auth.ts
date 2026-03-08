@@ -152,21 +152,19 @@ router.post("/refresh", validate(refreshSchema), async (req, res) => {
 router.post("/forgot-password", validate(forgotPasswordSchema), async (req, res) => {
     const { email } = req.body;
 
-    // Always return success to prevent email enumeration
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
         res.json({ message: "If that email exists, a reset link has been sent" });
         return;
     }
 
-    // Invalidate any existing reset tokens for this user
     await prisma.passwordReset.updateMany({
         where: { userId: user.id, usedAt: null },
         data: { usedAt: new Date() },
     });
 
     const token = randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
     await prisma.passwordReset.create({
         data: { userId: user.id, token, expiresAt },
@@ -202,7 +200,6 @@ router.post("/reset-password", validate(resetPasswordSchema), async (req, res) =
             where: { id: resetRecord.id },
             data: { usedAt: new Date() },
         }),
-        // Revoke all refresh tokens on password change
         prisma.refreshToken.deleteMany({
             where: { userId: resetRecord.userId },
         }),
