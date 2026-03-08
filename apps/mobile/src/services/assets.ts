@@ -34,7 +34,6 @@ export async function getTop100(options: {
   if (options.sort) params.sort = options.sort;
   if (options.order) params.order = options.order;
   const { data } = await client.get<PaginatedResponse>("/assets/top100", { params });
-  console.log("🚀 ~ getTop100 ~ data:", data)
   return data;
 }
 

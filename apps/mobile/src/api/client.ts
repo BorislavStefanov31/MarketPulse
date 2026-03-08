@@ -1,8 +1,10 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
 
+const devHost = Constants.expoConfig?.hostUri?.split(":")[0] ?? "localhost";
 const BASE_URL = __DEV__
-  ? "http://localhost:3000/api/v1"
+  ? `http://${devHost}:3000/api/v1`
   : "https://api.marketpulse.app/api/v1";
 
 const client = axios.create({ baseURL: BASE_URL });

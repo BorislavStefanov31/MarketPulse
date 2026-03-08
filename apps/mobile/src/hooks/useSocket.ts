@@ -2,12 +2,14 @@ import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useQueryClient } from "@tanstack/react-query";
 import * as SecureStore from "expo-secure-store";
+import Constants from "expo-constants";
 import { getTriggeredAlerts } from "../services/alerts";
 import { useToast } from "../components/Toast";
 import { useLocale } from "../contexts/LocaleContext";
 
+const devHost = Constants.expoConfig?.hostUri?.split(":")[0] ?? "localhost";
 const SOCKET_URL = __DEV__
-  ? "http://localhost:3001"
+  ? `http://${devHost}:3001`
   : "https://ws.marketpulse.app";
 
 export function useSocket() {
