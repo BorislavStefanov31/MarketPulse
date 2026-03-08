@@ -5,9 +5,9 @@ export const priceQueue = new Queue("price-fetch", {
   connection: { url: env.REDIS_URL },
 });
 
-// Repeat every 5 minutes
+// Repeat every 1 minute
 await priceQueue.upsertJobScheduler(
   "fetch-prices",
-  { every: 5 * 60 * 1000 },
+  { every: 1 * 60 * 1000 },
   { name: "fetch-prices" }
 );

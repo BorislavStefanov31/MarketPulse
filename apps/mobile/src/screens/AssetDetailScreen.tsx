@@ -73,6 +73,7 @@ export default function AssetDetailScreen({ route }: Props) {
   const [alertModalVisible, setAlertModalVisible] = useState(false);
   const [alertType, setAlertType] = useState<AlertType>("ABOVE");
   const [alertPrice, setAlertPrice] = useState("");
+  const [alertPriceError, setAlertPriceError] = useState("");
   const aiTriggered = useRef(false);
   if (tab === "ai") aiTriggered.current = true;
 
@@ -99,6 +100,7 @@ export default function AssetDetailScreen({ route }: Props) {
       queryClient.invalidateQueries({ queryKey: ["alerts"] });
       setAlertModalVisible(false);
       setAlertPrice("");
+      setAlertPriceError("");
     },
     onError: () => {
       Alert.alert(t("error"), t("somethingWentWrong"));
@@ -335,7 +337,7 @@ export default function AssetDetailScreen({ route }: Props) {
                     { borderColor: colors.border },
                     alertType === at && { backgroundColor: colors.primary, borderColor: colors.primary },
                   ]}
-                  onPress={() => setAlertType(at)}
+                  onPress={() => { setAlertType(at); setAlertPriceError(""); }}
                 >
                   <Text
                     style={[
@@ -350,19 +352,30 @@ export default function AssetDetailScreen({ route }: Props) {
               ))}
             </View>
 
+            <Text style={[styles.alertCurrentPrice, { color: colors.textSecondary }]}>
+              {t("currentPrice", { price: formatPrice(asset.currentPrice) })}
+            </Text>
+
             <TextInput
-              style={[styles.alertInput, { borderColor: colors.border, color: colors.text, backgroundColor: colors.background }]}
+              style={[styles.alertInput, { borderColor: alertPriceError ? "#ef4444" : colors.border, color: colors.text, backgroundColor: colors.background }]}
               placeholder={t("targetPrice")}
               placeholderTextColor={colors.textSecondary}
               keyboardType="decimal-pad"
               value={alertPrice}
-              onChangeText={setAlertPrice}
+              onChangeText={(v) => {
+                setAlertPrice(v);
+                setAlertPriceError("");
+              }}
             />
+
+            {alertPriceError ? (
+              <Text style={styles.alertErrorText}>{alertPriceError}</Text>
+            ) : null}
 
             <View style={styles.alertModalButtons}>
               <TouchableOpacity
                 style={[styles.alertModalBtn, { borderColor: colors.border, borderWidth: 1 }]}
-                onPress={() => { setAlertModalVisible(false); setAlertPrice(""); }}
+                onPress={() => { setAlertModalVisible(false); setAlertPrice(""); setAlertPriceError(""); }}
               >
                 <Text style={[styles.alertModalBtnText, { color: colors.text }]}>{t("cancel")}</Text>
               </TouchableOpacity>
@@ -372,7 +385,20 @@ export default function AssetDetailScreen({ route }: Props) {
                   { backgroundColor: colors.primary },
                   (!alertPrice.trim() || isNaN(parseFloat(alertPrice))) && { opacity: 0.5 },
                 ]}
-                onPress={() => createAlertMutation.mutate()}
+                onPress={() => {
+                  const target = parseFloat(alertPrice);
+                  const current = asset.currentPrice ?? 0;
+                  const priceStr = formatPrice(current);
+                  if (alertType === "ABOVE" && target <= current) {
+                    setAlertPriceError(t("alertAboveMustBeHigher", { price: priceStr }));
+                    return;
+                  }
+                  if (alertType === "BELOW" && target >= current) {
+                    setAlertPriceError(t("alertBelowMustBeLower", { price: priceStr }));
+                    return;
+                  }
+                  createAlertMutation.mutate();
+                }}
                 disabled={createAlertMutation.isPending || !alertPrice.trim() || isNaN(parseFloat(alertPrice))}
               >
                 {createAlertMutation.isPending ? (
@@ -431,6 +457,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   alertTypeBtnText: { fontSize: 14, fontWeight: "600" },
+  alertCurrentPrice: { fontSize: 13, marginBottom: 12, textAlign: "center" },
+  alertErrorText: { color: "#ef4444", fontSize: 13, marginTop: -10, marginBottom: 12 },
   alertInput: {
     borderWidth: 1,
     borderRadius: 8,

@@ -17,6 +17,7 @@ import type { MainStackParamList } from "../../navigation/MainStack";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLocale } from "../../contexts/LocaleContext";
 
+
 const SORT_FIELDS: { labelKey: string; field: SortField }[] = [
   { labelKey: "rank", field: "rank" },
   { labelKey: "price", field: "currentPrice" },
@@ -91,9 +92,9 @@ export default function HomeScreen() {
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    refetchInterval: 5 * 60 * 1000,
+    refetchInterval: 1 * 60 * 1000,
     refetchIntervalInBackground: false,
-    refetchOnWindowFocus:true
+    refetchOnWindowFocus: true
   });
 
   const assets = data?.pages.flatMap((p) => p.data) ?? [];

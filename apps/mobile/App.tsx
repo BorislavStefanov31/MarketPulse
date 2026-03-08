@@ -10,7 +10,7 @@ import RootNavigator from "./src/navigation/RootNavigator";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000,
+      staleTime: 1 * 60 * 1000,
       retry: 2,
     },
   },

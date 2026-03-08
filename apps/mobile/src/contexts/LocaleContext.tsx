@@ -66,6 +66,9 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     active: "Active",
     triggered: "Triggered",
     maxAlerts: "Maximum 10 alerts allowed",
+    alertAboveMustBeHigher: "Target price must be above current price ({price})",
+    alertBelowMustBeLower: "Target price must be below current price ({price})",
+    currentPrice: "Current: {price}",
   },
   bg: {
     // Табове
@@ -127,6 +130,9 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     active: "Активна",
     triggered: "Задействана",
     maxAlerts: "Максимум 10 аларми",
+    alertAboveMustBeHigher: "Целевата цена трябва да е над текущата ({price})",
+    alertBelowMustBeLower: "Целевата цена трябва да е под текущата ({price})",
+    currentPrice: "Текуща: {price}",
   },
 };
 

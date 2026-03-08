@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { AppState } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { getTriggeredAlerts } from "../services/alerts";
 import { useToast } from "../components/Toast";
 import { useLocale } from "../contexts/LocaleContext";
 
-const POLL_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const POLL_INTERVAL = 1 * 60 * 1000; // 1 minute
 
 export function useAlertPoller() {
   const { showToast } = useToast();
@@ -13,7 +13,13 @@ export function useAlertPoller() {
   const queryClient = useQueryClient();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const checkAlerts = async () => {
+  // Keep latest refs so the interval callback always uses current values
+  const showToastRef = useRef(showToast);
+  showToastRef.current = showToast;
+  const tRef = useRef(t);
+  tRef.current = t;
+
+  const checkAlerts = useCallback(async () => {
     try {
       const triggered = await getTriggeredAlerts();
       if (triggered.length > 0) {
@@ -25,15 +31,15 @@ export function useAlertPoller() {
           }) ?? "—";
           const msg =
             alert.type === "ABOVE"
-              ? t("alertAboveMsg", { symbol: alert.asset.symbol, price })
-              : t("alertBelowMsg", { symbol: alert.asset.symbol, price });
-          showToast(t("alertTriggered"), msg, "alert");
+              ? tRef.current("alertAboveMsg", { symbol: alert.asset.symbol, price })
+              : tRef.current("alertBelowMsg", { symbol: alert.asset.symbol, price });
+          showToastRef.current(tRef.current("alertTriggered"), msg, "alert");
         }
       }
     } catch {
       // silently ignore polling errors
     }
-  };
+  }, [queryClient]);
 
   useEffect(() => {
     // Check immediately on mount
@@ -61,5 +67,5 @@ export function useAlertPoller() {
       if (intervalRef.current) clearInterval(intervalRef.current);
       subscription.remove();
     };
-  }, []);
+  }, [checkAlerts]);
 }
