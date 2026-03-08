@@ -3,6 +3,7 @@ import helmet from "helmet";
 import { httpLogger } from "./logger.js";
 import { globalLimiter } from "./middlewares/rateLimiter.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { setupSwagger } from "./swagger.js";
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.get("/metrics", (_req, res) => {
 // API routes
 import routes from "./routes/index.js";
 app.use("/api/v1", routes);
+
+// Swagger docs (after routes, before error handler — needs CSP disabled)
+setupSwagger(app);
 
 // Centralized error handler (must be last)
 app.use(errorHandler);
