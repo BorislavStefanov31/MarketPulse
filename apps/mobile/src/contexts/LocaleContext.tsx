@@ -69,6 +69,13 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     alertAboveMustBeHigher: "Target price must be above current price ({price})",
     alertBelowMustBeLower: "Target price must be below current price ({price})",
     currentPrice: "Current: {price}",
+    addedToWatchlist: "Added to watchlist",
+    watchlistCreated: "Watchlist created",
+    alertCreated: "Alert created",
+    notifyWhenReady: "Notify me when ready",
+    aiReportReady: "AI Report Ready",
+    aiReportReadyMsg: "The analysis for {symbol} is ready to view.",
+    generatingReport: "Generating...",
   },
   bg: {
     // Табове
@@ -133,6 +140,13 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     alertAboveMustBeHigher: "Целевата цена трябва да е над текущата ({price})",
     alertBelowMustBeLower: "Целевата цена трябва да е под текущата ({price})",
     currentPrice: "Текуща: {price}",
+    addedToWatchlist: "Добавено в списък",
+    watchlistCreated: "Списъкът е създаден",
+    alertCreated: "Алармата е създадена",
+    notifyWhenReady: "Извести ме когато е готов",
+    aiReportReady: "AI докладът е готов",
+    aiReportReadyMsg: "Анализът за {symbol} е готов за преглед.",
+    generatingReport: "Генериране...",
   },
 };
 

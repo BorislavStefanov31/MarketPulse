@@ -19,6 +19,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useLocale } from "../../contexts/LocaleContext";
+import { useToast } from "../../components/Toast";
 import {
   getWatchlists,
   createWatchlist,
@@ -136,6 +137,7 @@ function SwipeableAssetRow({
 export default function WatchlistScreen() {
   const { colors } = useTheme();
   const { t } = useLocale();
+  const { showToast } = useToast();
   const navigation = useNavigation<NativeStackNavigationProp<MainStackParamList>>();
   const queryClient = useQueryClient();
 
@@ -156,6 +158,7 @@ export default function WatchlistScreen() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["watchlists"] });
       closeModal();
+      showToast(t("watchlistCreated"), "");
     },
   });
 

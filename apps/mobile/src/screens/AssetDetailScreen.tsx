@@ -22,6 +22,8 @@ import { getWatchlists, addAssetToWatchlist } from "../services/watchlists";
 import { createAlert, type AlertType } from "../services/alerts";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocale } from "../contexts/LocaleContext";
+import { useToast } from "../components/Toast";
+import { useAiNotify } from "../contexts/AiNotifyContext";
 import LightweightChart from "../components/LightweightChart";
 import { ReportSkeleton, ChartSkeleton } from "../components/Skeleton";
 
@@ -67,6 +69,7 @@ export default function AssetDetailScreen({ route }: Props) {
   const { assetId } = route.params;
   const { colors, isDark } = useTheme();
   const { t } = useLocale();
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("chart");
   const [wlPickerVisible, setWlPickerVisible] = useState(false);
@@ -74,6 +77,7 @@ export default function AssetDetailScreen({ route }: Props) {
   const [alertType, setAlertType] = useState<AlertType>("ABOVE");
   const [alertPrice, setAlertPrice] = useState("");
   const [alertPriceError, setAlertPriceError] = useState("");
+  const { requestNotify, isPending: isAiNotifyPending } = useAiNotify();
   const aiTriggered = useRef(false);
   if (tab === "ai") aiTriggered.current = true;
 
@@ -88,6 +92,7 @@ export default function AssetDetailScreen({ route }: Props) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["watchlists"] });
       setWlPickerVisible(false);
+      showToast(t("addedToWatchlist"), "");
     },
     onError: () => {
       Alert.alert(t("error"), t("somethingWentWrong"));
@@ -101,6 +106,7 @@ export default function AssetDetailScreen({ route }: Props) {
       setAlertModalVisible(false);
       setAlertPrice("");
       setAlertPriceError("");
+      showToast(t("alertCreated"), "");
     },
     onError: () => {
       Alert.alert(t("error"), t("somethingWentWrong"));
@@ -228,7 +234,17 @@ export default function AssetDetailScreen({ route }: Props) {
       ) : (
         <View style={styles.reportContainer}>
           {reportLoading ? (
-            <ReportSkeleton accentColor={colors.primary} />
+            <>
+              <ReportSkeleton accentColor={colors.primary} />
+              {!isAiNotifyPending(assetId) && (
+                <TouchableOpacity
+                  style={[styles.notifyBtn, { backgroundColor: colors.primary }]}
+                  onPress={() => requestNotify(assetId, asset?.symbol ?? "")}
+                >
+                  <Text style={styles.notifyBtnText}>{t("notifyWhenReady")}</Text>
+                </TouchableOpacity>
+              )}
+            </>
           ) : report ? (
             <>
               <View style={styles.reportHeader}>
@@ -506,4 +522,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalCancelText: { fontSize: 15, fontWeight: "600" },
+  notifyStatus: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16 },
+  notifyStatusText: { fontSize: 14, fontWeight: "500" },
+  notifyBtn: { alignSelf: "center", paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8, marginTop: 16 },
+  notifyBtnText: { color: "#fff", fontSize: 14, fontWeight: "600" },
 });

@@ -8,6 +8,8 @@ import {
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../contexts/ThemeContext";
 
 type ToastType = "success" | "error" | "alert";
 
@@ -28,38 +30,64 @@ export function useToast() {
   return useContext(ToastContext);
 }
 
+const ICON_MAP: Record<ToastType, { name: keyof typeof Ionicons.glyphMap; bg: string; accent: string }> = {
+  success: { name: "checkmark-circle", bg: "rgba(34,197,94,0.12)", accent: "#22c55e" },
+  error: { name: "close-circle", bg: "rgba(239,68,68,0.12)", accent: "#ef4444" },
+  alert: { name: "notifications", bg: "rgba(245,158,11,0.12)", accent: "#f59e0b" },
+};
+
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
-  const translateY = useRef(new Animated.Value(-100)).current;
+  const { colors } = useTheme();
+  const translateY = useRef(new Animated.Value(-80)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(0.9)).current;
 
   React.useEffect(() => {
     Animated.parallel([
-      Animated.spring(translateY, { toValue: 0, useNativeDriver: true, friction: 8 }),
-      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.spring(translateY, { toValue: 0, useNativeDriver: true, friction: 10, tension: 80 }),
+      Animated.timing(opacity, { toValue: 1, duration: 250, useNativeDriver: true }),
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true, friction: 8 }),
     ]).start();
 
     const timer = setTimeout(() => {
       Animated.parallel([
-        Animated.timing(translateY, { toValue: -100, duration: 250, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0, duration: 250, useNativeDriver: true }),
+        Animated.timing(translateY, { toValue: -80, duration: 300, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0, duration: 300, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 0.9, duration: 300, useNativeDriver: true }),
       ]).start(() => onDismiss());
-    }, 4000);
+    }, 3500);
 
     return () => clearTimeout(timer);
   }, []);
 
-  const bgColor =
-    item.type === "alert" ? "#f59e0b" : item.type === "error" ? "#ef4444" : "#22c55e";
-  const icon = item.type === "alert" ? "🔔" : item.type === "error" ? "✕" : "✓";
+  const { name: iconName, bg: iconBg, accent } = ICON_MAP[item.type];
+  const hasMessage = item.message.length > 0;
 
   return (
-    <Animated.View style={[styles.toast, { backgroundColor: bgColor, transform: [{ translateY }], opacity }]}>
-      <TouchableOpacity style={styles.toastContent} onPress={onDismiss} activeOpacity={0.8}>
-        <Text style={styles.toastIcon}>{icon}</Text>
-        <View style={styles.toastText}>
-          <Text style={styles.toastTitle}>{item.title}</Text>
-          <Text style={styles.toastMessage} numberOfLines={2}>{item.message}</Text>
+    <Animated.View
+      style={[
+        styles.toast,
+        {
+          backgroundColor: colors.card,
+          borderLeftColor: accent,
+          transform: [{ translateY }, { scale }],
+          opacity,
+        },
+      ]}
+    >
+      <TouchableOpacity style={styles.toastContent} onPress={onDismiss} activeOpacity={0.7}>
+        <View style={[styles.iconContainer, { backgroundColor: iconBg }]}>
+          <Ionicons name={iconName} size={20} color={accent} />
         </View>
+        <View style={styles.toastText}>
+          <Text style={[styles.toastTitle, { color: colors.text }]}>{item.title}</Text>
+          {hasMessage && (
+            <Text style={[styles.toastMessage, { color: colors.textSecondary }]} numberOfLines={2}>
+              {item.message}
+            </Text>
+          )}
+        </View>
+        <Ionicons name="close" size={18} color={colors.textSecondary} />
       </TouchableOpacity>
     </Animated.View>
   );
@@ -94,27 +122,35 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    left: 12,
-    right: 12,
+    left: 16,
+    right: 16,
     zIndex: 9999,
-    gap: 6,
+    gap: 8,
   },
   toast: {
-    borderRadius: 12,
+    borderRadius: 14,
+    borderLeftWidth: 4,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
   toastContent: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     gap: 12,
   },
-  toastIcon: { fontSize: 20 },
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   toastText: { flex: 1 },
-  toastTitle: { color: "#fff", fontSize: 15, fontWeight: "700" },
-  toastMessage: { color: "rgba(255,255,255,0.9)", fontSize: 13, marginTop: 2 },
+  toastTitle: { fontSize: 15, fontWeight: "700" },
+  toastMessage: { fontSize: 13, marginTop: 2, lineHeight: 18 },
 });

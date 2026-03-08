@@ -5,6 +5,7 @@ import { AuthProvider } from "./src/contexts/AuthContext";
 import { ThemeProvider, useTheme } from "./src/contexts/ThemeContext";
 import { LocaleProvider } from "./src/contexts/LocaleContext";
 import { ToastProvider } from "./src/components/Toast";
+import { AiNotifyProvider } from "./src/contexts/AiNotifyContext";
 import RootNavigator from "./src/navigation/RootNavigator";
 
 const queryClient = new QueryClient({
@@ -34,7 +35,9 @@ export default function App() {
           <ThemeProvider>
             <AuthProvider>
               <ToastProvider>
-                <AppContent />
+                <AiNotifyProvider>
+                  <AppContent />
+                </AiNotifyProvider>
               </ToastProvider>
             </AuthProvider>
           </ThemeProvider>
