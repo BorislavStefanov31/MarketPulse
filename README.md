@@ -25,7 +25,7 @@ Real-time cryptocurrency tracking app with AI-powered analysis, watchlists, and 
 ### 1. Clone and install dependencies
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/BorislavStefanov31/MarketPulse.git
 cd MarketPulse
 npm run install:all
 ```
