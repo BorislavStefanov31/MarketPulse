@@ -123,6 +123,8 @@ Start the backend and visit [http://localhost:3000/docs](http://localhost:3000/d
 | PostgreSQL | 5432 |
 | Redis      | 6379 |
 
+## High-level design of the system:
+
 <img width="1233" height="782" alt="Screenshot at Mar 08 20-52-59" src="https://github.com/user-attachments/assets/7f92d38b-5701-4b72-960a-28c41f85174b" />
 
 
