@@ -40,13 +40,16 @@ Edit `.env` and fill in the required values:
 
 | Variable           | Description                  |
 | ------------------ | ---------------------------- |
-| `JWT_ACCESS_SECRET`  | Secret for access tokens     |
-| `JWT_REFRESH_SECRET` | Secret for refresh tokens    |
-| `OPENAI_API_KEY`     | OpenAI API key for AI reports |
-| `RESEND_API_KEY`     | Resend API key for emails    |
-| `RESEND_FROM_EMAIL`  | Sender email address         |
+| `JWT_ACCESS_SECRET`  | Secret for access tokens (can be any text on dev)|
+| `JWT_REFRESH_SECRET` | Secret for refresh tokens (can be any text on dev)|
+| `OPENAI_API_KEY`     | OpenAI API key for AI reports ()https://openai.com/api/ |
+| `RESEND_API_KEY`     | Resend API key for emails (https://resend.com/)|
+| `RESEND_FROM_EMAIL`  | Sender email address (https://resend.com/)|
 
 Database and Redis URLs are set automatically by Docker Compose for local dev.
+
+Disclaimer:
+If you don't have a resend email the RESEND_FROM_EMAIL can be onboarding@resend.dev, but it will only send send emails to the email with which you have registered in Resend
 
 ### 3. Start everything
 
@@ -121,3 +124,5 @@ Start the backend and visit [http://localhost:3000/docs](http://localhost:3000/d
 | Redis      | 6379 |
 
 <img width="1233" height="782" alt="Screenshot at Mar 08 20-52-59" src="https://github.com/user-attachments/assets/7f92d38b-5701-4b72-960a-28c41f85174b" />
+
+
