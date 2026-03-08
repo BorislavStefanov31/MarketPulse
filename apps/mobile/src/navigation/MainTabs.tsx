@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocale } from "../contexts/LocaleContext";
+import { useAlertPoller } from "../hooks/useAlertPoller";
 import HomeScreen from "../screens/tabs/HomeScreen";
 import WatchlistScreen from "../screens/tabs/WatchlistScreen";
 import AlertsScreen from "../screens/tabs/AlertsScreen";
@@ -18,6 +19,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 export default function MainTabs() {
   const { colors } = useTheme();
   const { t } = useLocale();
+  useAlertPoller();
 
   return (
     <Tab.Navigator

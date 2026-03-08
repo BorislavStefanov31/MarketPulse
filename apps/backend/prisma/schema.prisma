@@ -53,6 +53,7 @@ model Alert {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   assetId     String
   asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  type        AlertType @default(ABOVE)
   targetPrice Float
   isTriggered Boolean   @default(false)
   isActive    Boolean   @default(true)
@@ -154,4 +155,9 @@ enum Role {
 enum AssetType {
   CRYPTO
   STOCK
+}
+
+enum AlertType {
+  ABOVE
+  BELOW
 }

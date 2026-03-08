@@ -6,14 +6,20 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Dimensions,
+  Modal,
+  FlatList,
+  TextInput,
+  Alert,
   StyleSheet,
 } from "react-native";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Markdown from "react-native-marked";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { MainStackParamList } from "../navigation/MainStack";
 import { getAssetById, getAssetHistory } from "../services/assets";
 import { getLatestReport } from "../services/ai";
+import { getWatchlists, addAssetToWatchlist } from "../services/watchlists";
+import { createAlert, type AlertType } from "../services/alerts";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocale } from "../contexts/LocaleContext";
 import LightweightChart from "../components/LightweightChart";
@@ -61,9 +67,43 @@ export default function AssetDetailScreen({ route }: Props) {
   const { assetId } = route.params;
   const { colors, isDark } = useTheme();
   const { t } = useLocale();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("chart");
+  const [wlPickerVisible, setWlPickerVisible] = useState(false);
+  const [alertModalVisible, setAlertModalVisible] = useState(false);
+  const [alertType, setAlertType] = useState<AlertType>("ABOVE");
+  const [alertPrice, setAlertPrice] = useState("");
   const aiTriggered = useRef(false);
   if (tab === "ai") aiTriggered.current = true;
+
+  const { data: watchlists } = useQuery({
+    queryKey: ["watchlists"],
+    queryFn: getWatchlists,
+    enabled: wlPickerVisible,
+  });
+
+  const addToWlMutation = useMutation({
+    mutationFn: (watchlistId: string) => addAssetToWatchlist(watchlistId, assetId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["watchlists"] });
+      setWlPickerVisible(false);
+    },
+    onError: () => {
+      Alert.alert(t("error"), t("somethingWentWrong"));
+    },
+  });
+
+  const createAlertMutation = useMutation({
+    mutationFn: () => createAlert(assetId, alertType, parseFloat(alertPrice)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["alerts"] });
+      setAlertModalVisible(false);
+      setAlertPrice("");
+    },
+    onError: () => {
+      Alert.alert(t("error"), t("somethingWentWrong"));
+    },
+  });
 
   const { data: asset, isLoading: assetLoading } = useQuery({
     queryKey: ["asset", assetId],
@@ -112,6 +152,20 @@ export default function AssetDetailScreen({ route }: Props) {
       <View style={styles.header}>
         <Text style={[styles.price, { color: colors.text }]}>{formatPrice(asset.currentPrice)}</Text>
         <Text style={[styles.change, { color: changeColor }]}>{changeText} (24h)</Text>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={[styles.headerBtn, { borderColor: colors.primary }]}
+            onPress={() => setWlPickerVisible(true)}
+          >
+            <Text style={[styles.headerBtnText, { color: colors.primary }]}>{t("addToWatchlist")}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.headerBtn, { borderColor: colors.primary }]}
+            onPress={() => setAlertModalVisible(true)}
+          >
+            <Text style={[styles.headerBtnText, { color: colors.primary }]}>{t("newAlert")}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Tab selector */}
@@ -232,6 +286,105 @@ export default function AssetDetailScreen({ route }: Props) {
           )}
         </View>
       )}
+      {/* Watchlist picker modal */}
+      <Modal visible={wlPickerVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>{t("addToWatchlist")}</Text>
+            {!watchlists || watchlists.length === 0 ? (
+              <Text style={[styles.modalEmpty, { color: colors.textSecondary }]}>{t("noWatchlists")}</Text>
+            ) : (
+              <FlatList
+                data={watchlists}
+                keyExtractor={(wl) => wl.id}
+                style={styles.modalList}
+                renderItem={({ item: wl }) => (
+                  <TouchableOpacity
+                    style={[styles.modalRow, { borderBottomColor: colors.border }]}
+                    onPress={() => addToWlMutation.mutate(wl.id)}
+                    disabled={addToWlMutation.isPending}
+                  >
+                    <Text style={[styles.modalRowText, { color: colors.text }]}>{wl.name}</Text>
+                    <Text style={[styles.modalRowCount, { color: colors.textSecondary }]}>{wl.assets.length}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+            <TouchableOpacity
+              style={[styles.modalCancelBtn, { borderColor: colors.border }]}
+              onPress={() => setWlPickerVisible(false)}
+            >
+              <Text style={[styles.modalCancelText, { color: colors.text }]}>{t("cancel")}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Create alert modal */}
+      <Modal visible={alertModalVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>{t("newAlert")}</Text>
+
+            <View style={styles.alertTypeRow}>
+              {(["ABOVE", "BELOW"] as AlertType[]).map((at) => (
+                <TouchableOpacity
+                  key={at}
+                  style={[
+                    styles.alertTypeBtn,
+                    { borderColor: colors.border },
+                    alertType === at && { backgroundColor: colors.primary, borderColor: colors.primary },
+                  ]}
+                  onPress={() => setAlertType(at)}
+                >
+                  <Text
+                    style={[
+                      styles.alertTypeBtnText,
+                      { color: colors.text },
+                      alertType === at && { color: "#fff" },
+                    ]}
+                  >
+                    {at === "ABOVE" ? t("priceAbove") : t("priceBelow")}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TextInput
+              style={[styles.alertInput, { borderColor: colors.border, color: colors.text, backgroundColor: colors.background }]}
+              placeholder={t("targetPrice")}
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="decimal-pad"
+              value={alertPrice}
+              onChangeText={setAlertPrice}
+            />
+
+            <View style={styles.alertModalButtons}>
+              <TouchableOpacity
+                style={[styles.alertModalBtn, { borderColor: colors.border, borderWidth: 1 }]}
+                onPress={() => { setAlertModalVisible(false); setAlertPrice(""); }}
+              >
+                <Text style={[styles.alertModalBtnText, { color: colors.text }]}>{t("cancel")}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.alertModalBtn,
+                  { backgroundColor: colors.primary },
+                  (!alertPrice.trim() || isNaN(parseFloat(alertPrice))) && { opacity: 0.5 },
+                ]}
+                onPress={() => createAlertMutation.mutate()}
+                disabled={createAlertMutation.isPending || !alertPrice.trim() || isNaN(parseFloat(alertPrice))}
+              >
+                {createAlertMutation.isPending ? (
+                  <ActivityIndicator color="#fff" size="small" />
+                ) : (
+                  <Text style={[styles.alertModalBtnText, { color: "#fff" }]}>{t("create")}</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -261,4 +414,68 @@ const styles = StyleSheet.create({
   badge: {},
   badgeText: { color: "#fff", fontSize: 12, fontWeight: "700", overflow: "hidden", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   reportDate: { fontSize: 12 },
+  headerActions: { flexDirection: "row", gap: 10, marginTop: 10 },
+  headerBtn: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+  },
+  headerBtnText: { fontSize: 13, fontWeight: "600" },
+  alertTypeRow: { flexDirection: "row", gap: 10, marginBottom: 16 },
+  alertTypeBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  alertTypeBtnText: { fontSize: 14, fontWeight: "600" },
+  alertInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  alertModalButtons: { flexDirection: "row", gap: 10 },
+  alertModalBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  alertModalBtnText: { fontSize: 15, fontWeight: "600" },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "85%",
+    maxHeight: "60%",
+    borderRadius: 12,
+    padding: 20,
+  },
+  modalTitle: { fontSize: 18, fontWeight: "700", marginBottom: 12 },
+  modalEmpty: { fontSize: 14, textAlign: "center", paddingVertical: 20 },
+  modalList: { maxHeight: 250 },
+  modalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  modalRowText: { fontSize: 15, fontWeight: "600" },
+  modalRowCount: { fontSize: 13 },
+  modalCancelBtn: {
+    marginTop: 12,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  modalCancelText: { fontSize: 15, fontWeight: "600" },
 });

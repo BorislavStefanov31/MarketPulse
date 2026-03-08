@@ -1,13 +1,18 @@
 import client from "../api/client";
+import type { Asset } from "./assets";
+
+export type AlertType = "ABOVE" | "BELOW";
 
 export type Alert = {
   id: string;
   assetId: string;
-  type: "ABOVE" | "BELOW";
+  type: AlertType;
   targetPrice: number;
-  triggered: boolean;
+  isTriggered: boolean;
+  isActive: boolean;
+  triggeredAt: string | null;
   createdAt: string;
-  asset?: { symbol: string; name: string };
+  asset: Asset;
 };
 
 export async function getAlerts() {
@@ -20,13 +25,13 @@ export async function getTriggeredAlerts() {
   return data;
 }
 
-export async function createAlert(assetId: string, type: "ABOVE" | "BELOW", targetPrice: number) {
+export async function createAlert(assetId: string, type: AlertType, targetPrice: number) {
   const { data } = await client.post<Alert>("/alerts", { assetId, type, targetPrice });
   return data;
 }
 
-export async function updateAlert(id: string, updates: Partial<Pick<Alert, "type" | "targetPrice">>) {
-  const { data } = await client.patch<Alert>(`/alerts/${id}`, updates);
+export async function toggleAlert(id: string, isActive: boolean) {
+  const { data } = await client.patch<Alert>(`/alerts/${id}`, { isActive });
   return data;
 }
 

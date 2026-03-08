@@ -1238,6 +1238,7 @@ export const AlertScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   assetId: 'assetId',
+  type: 'type',
   targetPrice: 'targetPrice',
   isTriggered: 'isTriggered',
   isActive: 'isActive',
@@ -1424,6 +1425,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'AlertType'
+ */
+export type EnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType'>
+    
+
+
+/**
+ * Reference to a field of type 'AlertType[]'
+ */
+export type ListEnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType[]'>
     
 
 

@@ -125,6 +125,7 @@ export const AlertScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   assetId: 'assetId',
+  type: 'type',
   targetPrice: 'targetPrice',
   isTriggered: 'isTriggered',
   isActive: 'isActive',

@@ -23,3 +23,11 @@ export const AssetType = {
 } as const
 
 export type AssetType = (typeof AssetType)[keyof typeof AssetType]
+
+
+export const AlertType = {
+  ABOVE: 'ABOVE',
+  BELOW: 'BELOW'
+} as const
+
+export type AlertType = (typeof AlertType)[keyof typeof AlertType]

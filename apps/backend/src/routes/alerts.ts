@@ -39,7 +39,7 @@ router.get("/triggered", async (req, res) => {
   const newlyTriggered = [];
 
   for (const alert of alerts) {
-    if (shouldTriggerAlert({ isActive: alert.isActive, isTriggered: alert.isTriggered, targetPrice: alert.targetPrice, currentPrice: alert.asset.currentPrice })) {
+    if (shouldTriggerAlert({ isActive: alert.isActive, isTriggered: alert.isTriggered, type: alert.type, targetPrice: alert.targetPrice, currentPrice: alert.asset.currentPrice })) {
       await prisma.alert.update({
         where: { id: alert.id },
         data: { isTriggered: true, triggeredAt: new Date() },
@@ -66,6 +66,7 @@ router.post("/", validate(createAlertSchema), async (req, res) => {
     data: {
       userId: req.userId!,
       assetId: req.body.assetId,
+      type: req.body.type,
       targetPrice: req.body.targetPrice,
     },
     include: { asset: true },

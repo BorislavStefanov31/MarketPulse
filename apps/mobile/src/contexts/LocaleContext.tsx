@@ -13,6 +13,9 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     alerts: "Alerts",
     settings: "Settings",
     logout: "Log Out",
+    // Common
+    error: "Error",
+    somethingWentWrong: "Oops! Something went wrong.",
     // Settings
     theme: "Theme",
     currency: "Currency",
@@ -49,6 +52,20 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     emptyWatchlist: "No assets in this watchlist yet",
     noWatchlists: "No watchlists yet. Tap + to create one.",
     addToWatchlist: "Add to Watchlist",
+    // Alerts
+    newAlert: "New Alert",
+    priceAbove: "Price Reached",
+    priceBelow: "Price Dropped",
+    targetPrice: "Target price",
+    noAlerts: "No alerts yet. Tap + to create one.",
+    deleteAlert: "Delete Alert",
+    deleteAlertConfirm: "Are you sure you want to delete this alert?",
+    alertTriggered: "Alert Triggered!",
+    alertAboveMsg: "{symbol} reached ${price}",
+    alertBelowMsg: "{symbol} dropped to ${price}",
+    active: "Active",
+    triggered: "Triggered",
+    maxAlerts: "Maximum 10 alerts allowed",
   },
   bg: {
     // Табове
@@ -57,6 +74,9 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     alerts: "Аларми",
     settings: "Настройки",
     logout: "Изход",
+    // Общи
+    error: "Грешка",
+    somethingWentWrong: "Упс! Нещо се обърка.",
     // Настройки
     theme: "Тема",
     currency: "Валута",
@@ -93,6 +113,20 @@ const STRINGS: Record<Locale, Record<string, string>> = {
     emptyWatchlist: "Все още няма активи в този списък",
     noWatchlists: "Все още нямате списъци. Натиснете + за да създадете.",
     addToWatchlist: "Добави към списък",
+    // Аларми
+    newAlert: "Нова аларма",
+    priceAbove: "Цената достигна",
+    priceBelow: "Цената падна",
+    targetPrice: "Целева цена",
+    noAlerts: "Все още нямате аларми. Натиснете + за да създадете.",
+    deleteAlert: "Изтрий аларма",
+    deleteAlertConfirm: "Сигурни ли сте, че искате да изтриете тази аларма?",
+    alertTriggered: "Аларма!",
+    alertAboveMsg: "{symbol} достигна ${price}",
+    alertBelowMsg: "{symbol} падна до ${price}",
+    active: "Активна",
+    triggered: "Задействана",
+    maxAlerts: "Максимум 10 аларми",
   },
 };
 

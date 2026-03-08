@@ -38,6 +38,7 @@ export type AlertMinAggregateOutputType = {
   id: string | null
   userId: string | null
   assetId: string | null
+  type: $Enums.AlertType | null
   targetPrice: number | null
   isTriggered: boolean | null
   isActive: boolean | null
@@ -49,6 +50,7 @@ export type AlertMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   assetId: string | null
+  type: $Enums.AlertType | null
   targetPrice: number | null
   isTriggered: boolean | null
   isActive: boolean | null
@@ -60,6 +62,7 @@ export type AlertCountAggregateOutputType = {
   id: number
   userId: number
   assetId: number
+  type: number
   targetPrice: number
   isTriggered: number
   isActive: number
@@ -81,6 +84,7 @@ export type AlertMinAggregateInputType = {
   id?: true
   userId?: true
   assetId?: true
+  type?: true
   targetPrice?: true
   isTriggered?: true
   isActive?: true
@@ -92,6 +96,7 @@ export type AlertMaxAggregateInputType = {
   id?: true
   userId?: true
   assetId?: true
+  type?: true
   targetPrice?: true
   isTriggered?: true
   isActive?: true
@@ -103,6 +108,7 @@ export type AlertCountAggregateInputType = {
   id?: true
   userId?: true
   assetId?: true
+  type?: true
   targetPrice?: true
   isTriggered?: true
   isActive?: true
@@ -201,6 +207,7 @@ export type AlertGroupByOutputType = {
   id: string
   userId: string
   assetId: string
+  type: $Enums.AlertType
   targetPrice: number
   isTriggered: boolean
   isActive: boolean
@@ -235,6 +242,7 @@ export type AlertWhereInput = {
   id?: Prisma.StringFilter<"Alert"> | string
   userId?: Prisma.StringFilter<"Alert"> | string
   assetId?: Prisma.StringFilter<"Alert"> | string
+  type?: Prisma.EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
   targetPrice?: Prisma.FloatFilter<"Alert"> | number
   isTriggered?: Prisma.BoolFilter<"Alert"> | boolean
   isActive?: Prisma.BoolFilter<"Alert"> | boolean
@@ -248,6 +256,7 @@ export type AlertOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   assetId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   targetPrice?: Prisma.SortOrder
   isTriggered?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -264,6 +273,7 @@ export type AlertWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AlertWhereInput | Prisma.AlertWhereInput[]
   userId?: Prisma.StringFilter<"Alert"> | string
   assetId?: Prisma.StringFilter<"Alert"> | string
+  type?: Prisma.EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
   targetPrice?: Prisma.FloatFilter<"Alert"> | number
   isTriggered?: Prisma.BoolFilter<"Alert"> | boolean
   isActive?: Prisma.BoolFilter<"Alert"> | boolean
@@ -277,6 +287,7 @@ export type AlertOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   assetId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   targetPrice?: Prisma.SortOrder
   isTriggered?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -296,6 +307,7 @@ export type AlertScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Alert"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Alert"> | string
   assetId?: Prisma.StringWithAggregatesFilter<"Alert"> | string
+  type?: Prisma.EnumAlertTypeWithAggregatesFilter<"Alert"> | $Enums.AlertType
   targetPrice?: Prisma.FloatWithAggregatesFilter<"Alert"> | number
   isTriggered?: Prisma.BoolWithAggregatesFilter<"Alert"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Alert"> | boolean
@@ -305,6 +317,7 @@ export type AlertScalarWhereWithAggregatesInput = {
 
 export type AlertCreateInput = {
   id?: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -318,6 +331,7 @@ export type AlertUncheckedCreateInput = {
   id?: string
   userId: string
   assetId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -327,6 +341,7 @@ export type AlertUncheckedCreateInput = {
 
 export type AlertUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -340,6 +355,7 @@ export type AlertUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   assetId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -351,6 +367,7 @@ export type AlertCreateManyInput = {
   id?: string
   userId: string
   assetId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -360,6 +377,7 @@ export type AlertCreateManyInput = {
 
 export type AlertUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -371,6 +389,7 @@ export type AlertUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   assetId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -392,6 +411,7 @@ export type AlertCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   assetId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   targetPrice?: Prisma.SortOrder
   isTriggered?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -407,6 +427,7 @@ export type AlertMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   assetId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   targetPrice?: Prisma.SortOrder
   isTriggered?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -418,6 +439,7 @@ export type AlertMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   assetId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   targetPrice?: Prisma.SortOrder
   isTriggered?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -469,6 +491,10 @@ export type AlertUncheckedUpdateManyWithoutUserNestedInput = {
   update?: Prisma.AlertUpdateWithWhereUniqueWithoutUserInput | Prisma.AlertUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.AlertUpdateManyWithWhereWithoutUserInput | Prisma.AlertUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.AlertScalarWhereInput | Prisma.AlertScalarWhereInput[]
+}
+
+export type EnumAlertTypeFieldUpdateOperationsInput = {
+  set?: $Enums.AlertType
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -523,6 +549,7 @@ export type AlertUncheckedUpdateManyWithoutAssetNestedInput = {
 
 export type AlertCreateWithoutUserInput = {
   id?: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -534,6 +561,7 @@ export type AlertCreateWithoutUserInput = {
 export type AlertUncheckedCreateWithoutUserInput = {
   id?: string
   assetId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -574,6 +602,7 @@ export type AlertScalarWhereInput = {
   id?: Prisma.StringFilter<"Alert"> | string
   userId?: Prisma.StringFilter<"Alert"> | string
   assetId?: Prisma.StringFilter<"Alert"> | string
+  type?: Prisma.EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
   targetPrice?: Prisma.FloatFilter<"Alert"> | number
   isTriggered?: Prisma.BoolFilter<"Alert"> | boolean
   isActive?: Prisma.BoolFilter<"Alert"> | boolean
@@ -583,6 +612,7 @@ export type AlertScalarWhereInput = {
 
 export type AlertCreateWithoutAssetInput = {
   id?: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -594,6 +624,7 @@ export type AlertCreateWithoutAssetInput = {
 export type AlertUncheckedCreateWithoutAssetInput = {
   id?: string
   userId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -630,6 +661,7 @@ export type AlertUpdateManyWithWhereWithoutAssetInput = {
 export type AlertCreateManyUserInput = {
   id?: string
   assetId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -639,6 +671,7 @@ export type AlertCreateManyUserInput = {
 
 export type AlertUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -650,6 +683,7 @@ export type AlertUpdateWithoutUserInput = {
 export type AlertUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   assetId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -660,6 +694,7 @@ export type AlertUncheckedUpdateWithoutUserInput = {
 export type AlertUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   assetId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -670,6 +705,7 @@ export type AlertUncheckedUpdateManyWithoutUserInput = {
 export type AlertCreateManyAssetInput = {
   id?: string
   userId: string
+  type?: $Enums.AlertType
   targetPrice: number
   isTriggered?: boolean
   isActive?: boolean
@@ -679,6 +715,7 @@ export type AlertCreateManyAssetInput = {
 
 export type AlertUpdateWithoutAssetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -690,6 +727,7 @@ export type AlertUpdateWithoutAssetInput = {
 export type AlertUncheckedUpdateWithoutAssetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -700,6 +738,7 @@ export type AlertUncheckedUpdateWithoutAssetInput = {
 export type AlertUncheckedUpdateManyWithoutAssetInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
   targetPrice?: Prisma.FloatFieldUpdateOperationsInput | number
   isTriggered?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -713,6 +752,7 @@ export type AlertSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   userId?: boolean
   assetId?: boolean
+  type?: boolean
   targetPrice?: boolean
   isTriggered?: boolean
   isActive?: boolean
@@ -726,6 +766,7 @@ export type AlertSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   assetId?: boolean
+  type?: boolean
   targetPrice?: boolean
   isTriggered?: boolean
   isActive?: boolean
@@ -739,6 +780,7 @@ export type AlertSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   assetId?: boolean
+  type?: boolean
   targetPrice?: boolean
   isTriggered?: boolean
   isActive?: boolean
@@ -752,6 +794,7 @@ export type AlertSelectScalar = {
   id?: boolean
   userId?: boolean
   assetId?: boolean
+  type?: boolean
   targetPrice?: boolean
   isTriggered?: boolean
   isActive?: boolean
@@ -759,7 +802,7 @@ export type AlertSelectScalar = {
   createdAt?: boolean
 }
 
-export type AlertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "assetId" | "targetPrice" | "isTriggered" | "isActive" | "triggeredAt" | "createdAt", ExtArgs["result"]["alert"]>
+export type AlertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "assetId" | "type" | "targetPrice" | "isTriggered" | "isActive" | "triggeredAt" | "createdAt", ExtArgs["result"]["alert"]>
 export type AlertInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   asset?: boolean | Prisma.AssetDefaultArgs<ExtArgs>
@@ -783,6 +826,7 @@ export type $AlertPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     userId: string
     assetId: string
+    type: $Enums.AlertType
     targetPrice: number
     isTriggered: boolean
     isActive: boolean
@@ -1216,6 +1260,7 @@ export interface AlertFieldRefs {
   readonly id: Prisma.FieldRef<"Alert", 'String'>
   readonly userId: Prisma.FieldRef<"Alert", 'String'>
   readonly assetId: Prisma.FieldRef<"Alert", 'String'>
+  readonly type: Prisma.FieldRef<"Alert", 'AlertType'>
   readonly targetPrice: Prisma.FieldRef<"Alert", 'Float'>
   readonly isTriggered: Prisma.FieldRef<"Alert", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Alert", 'Boolean'>
