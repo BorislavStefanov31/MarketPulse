@@ -7,44 +7,92 @@ export type Locale = "en" | "bg";
 
 const STRINGS: Record<Locale, Record<string, string>> = {
   en: {
+    // Tabs
     dashboard: "Dashboard",
     watchlists: "Watchlists",
     alerts: "Alerts",
     settings: "Settings",
-    login: "Log In",
-    signup: "Sign Up",
     logout: "Log Out",
-    email: "Email",
-    password: "Password",
-    forgotPassword: "Forgot password?",
-    noAccount: "Don't have an account? Sign up",
-    hasAccount: "Already have an account? Log in",
+    // Settings
     theme: "Theme",
     currency: "Currency",
     language: "Language",
     light: "Light",
     dark: "Dark",
     system: "System",
+    // Home
+    rank: "Rank",
+    price: "Price",
+    change24h: "24h %",
+    volume: "Volume",
+    noAssetsFound: "No assets found",
+    // Asset detail
+    assetNotFound: "Asset not found",
+    chartAndStats: "Chart & Stats",
+    aiReport: "AI Report",
+    marketCap: "Market Cap",
+    volume24h: "24h Volume",
+    change24hLabel: "24h Change",
+    type: "Type",
+    noPriceHistory: "No price history yet",
+    noAiReport: "No AI report available. One will be generated shortly.",
+    // Watchlists
+    newWatchlist: "New Watchlist",
+    watchlistName: "Watchlist name",
+    create: "Create",
+    cancel: "Cancel",
+    deleteWatchlist: "Delete Watchlist",
+    deleteWatchlistConfirm: "Are you sure you want to delete \"{name}\"?",
+    delete: "Delete",
+    rename: "Rename",
+    removeAsset: "Remove",
+    emptyWatchlist: "No assets in this watchlist yet",
+    noWatchlists: "No watchlists yet. Tap + to create one.",
+    addToWatchlist: "Add to Watchlist",
   },
   bg: {
-    dashboard: "\u0422\u0430\u0431\u043B\u043E",
-    watchlists: "\u0421\u043F\u0438\u0441\u044A\u0446\u0438",
-    alerts: "\u0410\u043B\u0430\u0440\u043C\u0438",
-    settings: "\u041D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438",
-    login: "\u0412\u0445\u043E\u0434",
-    signup: "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044F",
-    logout: "\u0418\u0437\u0445\u043E\u0434",
-    email: "\u0418\u043C\u0435\u0439\u043B",
-    password: "\u041F\u0430\u0440\u043E\u043B\u0430",
-    forgotPassword: "\u0417\u0430\u0431\u0440\u0430\u0432\u0435\u043D\u0430 \u043F\u0430\u0440\u043E\u043B\u0430?",
-    noAccount: "\u041D\u044F\u043C\u0430\u0442\u0435 \u0430\u043A\u0430\u0443\u043D\u0442? \u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u0430\u0439\u0442\u0435 \u0441\u0435",
-    hasAccount: "\u0418\u043C\u0430\u0442\u0435 \u0430\u043A\u0430\u0443\u043D\u0442? \u0412\u043B\u0435\u0437\u0442\u0435",
-    theme: "\u0422\u0435\u043C\u0430",
-    currency: "\u0412\u0430\u043B\u0443\u0442\u0430",
-    language: "\u0415\u0437\u0438\u043A",
-    light: "\u0421\u0432\u0435\u0442\u043B\u0430",
-    dark: "\u0422\u044A\u043C\u043D\u0430",
-    system: "\u0421\u0438\u0441\u0442\u0435\u043C\u043D\u0430",
+    // Табове
+    dashboard: "Табло",
+    watchlists: "Списъци",
+    alerts: "Аларми",
+    settings: "Настройки",
+    logout: "Изход",
+    // Настройки
+    theme: "Тема",
+    currency: "Валута",
+    language: "Език",
+    light: "Светла",
+    dark: "Тъмна",
+    system: "Системна",
+    // Начален екран
+    rank: "Ранг",
+    price: "Цена",
+    change24h: "24ч %",
+    volume: "Обем",
+    noAssetsFound: "Няма намерени активи",
+    // Детайли за актив
+    assetNotFound: "Активът не е намерен",
+    chartAndStats: "Графика и статистика",
+    aiReport: "AI Доклад",
+    marketCap: "Пазарна кап.",
+    volume24h: "24ч обем",
+    change24hLabel: "24ч промяна",
+    type: "Тип",
+    noPriceHistory: "Няма история на цените",
+    noAiReport: "Няма наличен AI доклад. Ще бъде генериран скоро.",
+    // Списъци
+    newWatchlist: "Нов списък",
+    watchlistName: "Име на списъка",
+    create: "Създай",
+    cancel: "Отказ",
+    deleteWatchlist: "Изтрий списъка",
+    deleteWatchlistConfirm: "Сигурни ли сте, че искате да изтриете \"{name}\"?",
+    delete: "Изтрий",
+    rename: "Преименувай",
+    removeAsset: "Премахни",
+    emptyWatchlist: "Все още няма активи в този списък",
+    noWatchlists: "Все още нямате списъци. Натиснете + за да създадете.",
+    addToWatchlist: "Добави към списък",
   },
 };
 
@@ -52,7 +100,7 @@ type LocaleState = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   applyFromServer: (locale: string) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string>) => string;
 };
 
 const STORAGE_KEY = "locale";
@@ -95,7 +143,15 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: string) => STRINGS[locale][key] ?? key,
+    (key: string, params?: Record<string, string>) => {
+      let str = STRINGS[locale][key] ?? key;
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          str = str.replace(`{${k}}`, v);
+        }
+      }
+      return str;
+    },
     [locale]
   );
 

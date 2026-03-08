@@ -1,10 +1,20 @@
 import client from "../api/client";
+import type { Asset } from "./assets";
+
+export type WatchlistAsset = {
+  id: string;
+  assetId: string;
+  sortOrder: number;
+  addedAt: string;
+  asset: Asset;
+};
 
 export type Watchlist = {
   id: string;
   name: string;
   createdAt: string;
-  assets?: Array<{ id: string; symbol: string; name: string; priceUsd: string; changePercent24Hr: string }>;
+  updatedAt: string;
+  assets: WatchlistAsset[];
 };
 
 export async function getWatchlists() {
@@ -27,7 +37,8 @@ export async function deleteWatchlist(id: string) {
 }
 
 export async function addAssetToWatchlist(watchlistId: string, assetId: string) {
-  await client.post(`/watchlists/${watchlistId}/assets`, { assetId });
+  const { data } = await client.post<WatchlistAsset>(`/watchlists/${watchlistId}/assets`, { assetId });
+  return data;
 }
 
 export async function removeAssetFromWatchlist(watchlistId: string, assetId: string) {

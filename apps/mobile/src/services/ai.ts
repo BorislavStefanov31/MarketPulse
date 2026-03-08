@@ -3,7 +3,10 @@ import client from "../api/client";
 export type AiReport = {
   id: string;
   assetId: string;
-  report: string;
+  summary: string;
+  content: string;
+  sentiment: string | null;
+  isPinned: boolean;
   createdAt: string;
 };
 

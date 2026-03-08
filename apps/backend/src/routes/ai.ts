@@ -46,7 +46,7 @@ router.get("/report/:assetId/latest", validateUUID("assetId"), async (req, res) 
   }
 
   const response = await openai.responses.create({
-    model: "gpt-5.2",
+    model: "gpt-5-mini",
     tools: [{ type: "web_search_preview" }],
     instructions: `You are a financial analyst. The user will give you an asset name and symbol.
 Search the web for the latest news and market data about this asset.

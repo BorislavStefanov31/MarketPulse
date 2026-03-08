@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useLocale } from "../../contexts/LocaleContext";
 
 export default function AlertsScreen() {
+  const { t } = useLocale();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Alerts</Text>
+      <Text style={styles.title}>{t("alerts")}</Text>
     </View>
   );
 }

@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocale } from "../contexts/LocaleContext";
 import AuthStack from "./AuthStack";
-import MainTabs from "./MainTabs";
+import MainStack from "./MainStack";
 
 export default function RootNavigator() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -45,7 +45,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer theme={navigationTheme}>
-      {isAuthenticated ? <MainTabs /> : <AuthStack />}
+      {isAuthenticated ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }

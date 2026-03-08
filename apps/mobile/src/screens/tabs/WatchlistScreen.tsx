@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
+import { useLocale } from "../../contexts/LocaleContext";
 
 export default function WatchlistScreen() {
+  const { t } = useLocale();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Watchlists</Text>
+      <Text style={styles.title}>{t("watchlists")}</Text>
     </View>
   );
 }

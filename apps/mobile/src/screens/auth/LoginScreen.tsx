@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       await login(email.trim().toLowerCase(), password);
     } catch (error: any) {
-      Alert.alert("Login failed", error.response?.data?.message || error.message);
+      Alert.alert("Login failed", "Oops! Something went wrong.");
     } finally {
       setLoading(false);
     }
