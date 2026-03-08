@@ -92,8 +92,6 @@ export default function HomeScreen() {
       }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    refetchInterval: 1 * 60 * 1000,
-    refetchIntervalInBackground: false,
     refetchOnWindowFocus: true
   });
 

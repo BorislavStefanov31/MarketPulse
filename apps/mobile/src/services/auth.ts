@@ -11,7 +11,7 @@ export async function signup(email: string, password: string, displayName: strin
   const { data } = await client.post<AuthResponse>("/auth/signup", {
     email,
     password,
-    displayName,
+    name: displayName,
   });
   await storeTokens(data.accessToken, data.refreshToken);
   return data;

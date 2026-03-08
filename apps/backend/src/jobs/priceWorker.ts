@@ -3,6 +3,7 @@ import { prisma } from "../prisma.js";
 import { env } from "../config.js";
 import { coingeckoProvider } from "../services/marketProvider.js";
 import { cache } from "../services/cache.js";
+import { emitter } from "../services/socketEmitter.js";
 
 const worker = new Worker(
   "price-fetch",
@@ -49,6 +50,9 @@ const worker = new Worker(
 
     await cache.invalidatePattern("cache:top100:*");
     await cache.invalidatePattern("cache:asset:*");
+
+    // Emit real-time price update via Socket.IO (through Redis)
+    emitter.emit("prices:update", { timestamp: Date.now() });
 
     console.log(`[PriceWorker] Updated ${coins.length} assets`);
   },

@@ -24,6 +24,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "@socket.io/redis-emitter": "^5.1.0",
     "@types/ioredis": "^4.28.10",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.70.1",
@@ -40,6 +42,7 @@
     "pino-http": "^11.0.0",
     "rate-limit-redis": "^4.3.1",
     "resend": "^6.9.3",
+    "socket.io": "^4.8.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {

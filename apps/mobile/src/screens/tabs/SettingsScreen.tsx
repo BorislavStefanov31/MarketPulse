@@ -55,6 +55,9 @@ export default function SettingsScreen() {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.section}>
+        {user?.name ? (
+          <Text style={[styles.name, { color: colors.text }]}>{user.name}</Text>
+        ) : null}
         <Text style={[styles.email, { color: colors.textSecondary }]}>{user?.email}</Text>
       </View>
 
@@ -94,6 +97,7 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
   section: { marginBottom: 24 },
+  name: { fontSize: 20, fontWeight: "700", textAlign: "center", marginBottom: 4 },
   email: { fontSize: 16, textAlign: "center", marginBottom: 8 },
   row: { marginBottom: 20 },
   rowLabel: { fontSize: 16, fontWeight: "600", marginBottom: 8 },

@@ -92,6 +92,7 @@ router.get("/:id/history", validateUUID("id"), async (req, res) => {
       timestamp: { gte: since },
     },
     orderBy: { timestamp: "asc" },
+    take: 100,
   });
 
   res.json(snapshots);

@@ -65,5 +65,21 @@ services:
       redis:
         condition: service_healthy
 
+  socket:
+    build:
+      context: ./apps/backend
+    container_name: marketpulse-socket
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    command: npx tsx src/socket.ts
+    env_file:
+      - ./.env
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
 volumes:
   pgdata:
