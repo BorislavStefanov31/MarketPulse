@@ -129,6 +129,7 @@ Start the backend and visit [http://localhost:3000/docs](http://localhost:3000/d
 
 Architecture Decisions and Tradeoffs:
 
+
 BullMQ + Redis — The price fetching runs as a separate worker process. If it crashes, the API stays up. BullMQ handles retries automatically and Redis was already needed for caching and Socket.IO (in prod we can separate them). 
 
 Separate Socket.IO server — WebSocket connections sit on their own process so they don't block the API. The worker publishes pride:update events to Redis pub/sub, and Socket.IO picks them up and broadcasts to all clients.
