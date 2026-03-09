@@ -127,7 +127,8 @@ Start the backend and visit [http://localhost:3000/docs](http://localhost:3000/d
 
 <img width="1233" height="782" alt="Screenshot at Mar 08 20-52-59" src="https://github.com/user-attachments/assets/7f92d38b-5701-4b72-960a-28c41f85174b" />
 
-Architecture Decisions and Tradeoffs:
+
+## Architecture Decisions and Tradeoffs:
 
 
 BullMQ + Redis — The price fetching runs as a separate worker process. If it crashes, the API stays up. BullMQ handles retries automatically and Redis was already needed for caching and Socket.IO (in prod we can separate them). 
