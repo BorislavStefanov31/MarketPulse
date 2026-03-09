@@ -127,4 +127,42 @@ Start the backend and visit [http://localhost:3000/docs](http://localhost:3000/d
 
 <img width="1233" height="782" alt="Screenshot at Mar 08 20-52-59" src="https://github.com/user-attachments/assets/7f92d38b-5701-4b72-960a-28c41f85174b" />
 
+Architecture Decisions and Tradeoffs:
 
+BullMQ + Redis — The price fetching runs as a separate worker process. If it crashes, the API stays up. BullMQ handles retries automatically and Redis was already needed for caching and Socket.IO (in prod we can separate them). 
+
+Separate Socket.IO server — WebSocket connections sit on their own process so they don't block the API. The worker publishes pride:update events to Redis pub/sub, and Socket.IO picks them up and broadcasts to all clients.
+
+Single Redis instance — One Redis handles caching, BullMQ job queue, and Socket.IO pub/sub. In prod i would split those into separate processes
+
+Authentication — Just normal email/pass auth. Access tokens expire in 15 minutes, refresh tokens in 7 days. Tokens are stored in expo-secure-store (iOS Keychain / Android Keystore). On the BE refresh tokens are stored in the DB for stateless api.
+
+CoinGecko polling instead of WebSocket feeds — The worker fetches all 100 assets in one call, saves to Postgres, invalidates the cache, and emits a Socket.IO price:update event — so the mobile app would know to invalidate its queries and check for price alerts. For an app that does not support trading and i don't have access to real-time data i think this is fresh enough.
+
+One AI report per asset per day — OpenAI calls are slow and expensive (the cost a lot of tokens if we would have to do it for every person). Reports are saved in Postgres and cached in Redis. The prompt uses web search so reports still include current news.
+
+Prisma - i use prisma for type-safe queries, more readable schema and autmatic migrations to the Postgre. It also prevents SQL injections
+
+Docker Compose — Postgres, Redis, API, Worker, and Socket.IO each run in their own container for better scalability in the future via orchestrators like Kubernetes.
+
+Indexes — Composite indexes on snapshots, alerts, and watchlist for faster reads.
+
+Caching — Redis caches the top 100 list and asset details with a 60-second TTL, plus AI reports and user alerts which are invalidated on write. This is done for faster reads again.
+
+Tests - I also have unit and integration tests for the backend which creates temporal container for testing so that they doesn't interfiere with the normal processes.
+
+Swagger - There are swagger docs you can find in the "/docs" route
+
+Logging — Structured JSON logs with pino and also you can see what each of the containers is loggin trought the console or the Docker Dekstop application.
+
+Mobile - I use React Native Expo because it is easier to manage than a plain React Native ClI app and it is perfect for small projects like this (in there i also use the popular navigation library React Navigation instead of Expo Navigation, because im more expireneced with it and it gives you more granular control).
+
+React Query + Context for the mobile app — Server data (assets, watchlists, alerts) is managed by React Query which handles caching, refetching, and pagination. UI state (theme, locale, auth) uses React Context.
+
+Cursor-based pagination — Avoids the performance issues of OFFSET on large tables and prevents skipped rows when new data comes in. React Query's useInfiniteQuery handles cursor chaining natively.
+
+The mobile app's alerts - Alerts are shown only when you are in the app and are checked when the price:update event comes from the socket (the one that also triggers query invalidations for new fetches)
+
+The mobile app's chart - I use TradingView charts trough the "trading-view-light-charts" package because i think they have the best charts.
+
+Locale and theme - There is also a locale and theme in the app which are saved per account so that when the user returns its prefferences would be automatically applied.
