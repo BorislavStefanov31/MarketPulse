@@ -5,7 +5,6 @@ import { prisma } from "../../prisma.js";
 import { cleanAll, disconnectAll } from "./setup.js";
 
 let accessToken: string;
-let userId: string;
 let assetId: string;
 
 describe("Alerts API", () => {
@@ -17,7 +16,6 @@ describe("Alerts API", () => {
       .send({ email: "alerts@test.com", password: "Password123", name: "Alerts" });
 
     accessToken = signup.body.accessToken;
-    userId = signup.body.user.id;
 
     const asset = await prisma.asset.create({
       data: {
@@ -47,7 +45,7 @@ describe("Alerts API", () => {
       const res = await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 100000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 100000 });
 
       expect(res.status).toBe(201);
       expect(res.body.targetPrice).toBe(100000);
@@ -60,13 +58,13 @@ describe("Alerts API", () => {
         await request(app)
           .post("/api/v1/alerts")
           .set("Authorization", `Bearer ${accessToken}`)
-          .send({ assetId, targetPrice: 100000 + i });
+          .send({ assetId, type: "ABOVE", targetPrice: 100000 + i });
       }
 
       const res = await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 200000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 200000 });
 
       expect(res.status).toBe(400);
       expect(res.body.error).toBe("Maximum 10 alerts allowed");
@@ -78,7 +76,7 @@ describe("Alerts API", () => {
       await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 100000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 100000 });
 
       const res = await request(app)
         .get("/api/v1/alerts")
@@ -95,7 +93,7 @@ describe("Alerts API", () => {
       await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 90000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 90000 });
 
       const res = await request(app)
         .get("/api/v1/alerts/triggered")
@@ -110,7 +108,7 @@ describe("Alerts API", () => {
       await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 200000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 200000 });
 
       const res = await request(app)
         .get("/api/v1/alerts/triggered")
@@ -126,7 +124,7 @@ describe("Alerts API", () => {
       const created = await request(app)
         .post("/api/v1/alerts")
         .set("Authorization", `Bearer ${accessToken}`)
-        .send({ assetId, targetPrice: 100000 });
+        .send({ assetId, type: "ABOVE", targetPrice: 100000 });
 
       const res = await request(app)
         .delete(`/api/v1/alerts/${created.body.id}`)
