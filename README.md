@@ -137,9 +137,11 @@ Single Redis instance — One Redis handles caching, BullMQ job queue, and Socke
 
 Authentication — Just normal email/pass auth. Access tokens expire in 15 minutes, refresh tokens in 7 days. Tokens are stored in expo-secure-store (iOS Keychain / Android Keystore). On the BE refresh tokens are stored in the DB for stateless api.
 
-CoinGecko polling instead of WebSocket feeds — The worker fetches all 100 assets in one call, saves to Postgres, invalidates the cache, and emits a Socket.IO price:update event — so the mobile app would know to invalidate its queries and check for price alerts. For an app that does not support trading and i don't have access to real-time data i think this is fresh enough.
+CoinGecko polling instead of WebSocket feeds — The worker fetches all 100 assets in one call, saves to Postgres, invalidates the cache, and emits a Socket.IO price:update event — so the mobile app would know to invalidate its queries and check for price alerts. For an app that does not support trading and i don't have access to real-time data so i think this is fresh enough.
 
 One AI report per asset per day — OpenAI calls are slow and expensive (the cost a lot of tokens if we would have to do it for every person). Reports are saved in Postgres and cached in Redis. The prompt uses web search so reports still include current news.
+
+Email Service - i use Resend for forgot password emails.
 
 Prisma - i use prisma for type-safe queries, more readable schema and autmatic migrations to the Postgre. It also prevents SQL injections
 
