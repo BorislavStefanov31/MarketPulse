@@ -170,3 +170,7 @@ The mobile app's alerts - Alerts are shown only when you are in the app and are 
 The mobile app's chart - I use TradingView charts trough the "trading-view-light-charts" package because i think they have the best charts.
 
 Locale and theme - There is also a locale and theme in the app which are saved per account so that when the user returns its prefferences would be automatically applied.
+
+## Project Demo
+
+https://github.com/user-attachments/assets/d0fb3e05-f144-4b67-b096-8e19e90284d1
